@@ -76,7 +76,86 @@
 
 #include <xc.h>
 
+#define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
+
+void __interrupt() interrupcao(void) {
+    if (INTCON3bits.INT1IF) {
+        
+        INTCON3bits.INT1IF = 0;
+    } else if (INTCON3bits.INT2IF) {
+        
+        INTCON3bits.INT2IF = 0;
+    /*} else if (INTCONbits.TMR0IF) {
+        modo = 3;
+        INTCONbits.TMR0IF = 0;
+    */}
+}
+
+/*
+void __interrupt(low_priority) interrupcao_baixa(void){
+    //PORTD = 0x0F;
+    INTCON3bits.INT1IF = 0; // Limpa o flag bit da interrupcao extrena INT1
+}
+
+void __interrupt(high_priority) interrupcao_alta(void){
+    //PORTD = 0xF0;
+    INTCONbits.INT0IF = 0; // Limpa o flag bit da interrupcao extrena INT0
+}
+ */
+
+void config_timer0() {
+    T0CONbits.TMR0ON = 1; // Habilitar timer
+    T0CONbits.T08BIT = 0; // 8-bits ou 16-bits
+    T0CONbits.T0CS = 0; // clock interno do microcontrolador
+    //T0CONbits.T0SE = 0;
+    T0CONbits.PSA = 1; // Usar prescaler
+    T0CONbits.T0PS2 = 1;
+    T0CONbits.T0PS1 = 1;
+    T0CONbits.T0PS0 = 1;
+    INTCONbits.TMR0IE = 1; // Habilitar Timer
+}
+
+void config_interrupcao2() {
+    INTCON3bits.INT2IE = 1; // ativa a interrupcao externa INT2 (RB2)
+    INTCON2bits.INTEDG2 = 0; // Interrupcao externa INT2 na borda de descida
+    INTCON3bits.INT2IF = 0; // Limpa o flag bit da interrupcao extrena INT2
+    //INTCON3bits.INT2IP = 0;
+}
+
+void config_interrupcao1() {
+    INTCON3bits.INT1IE = 1; // ativa a interrupcao externa INT1 (RB1)
+    INTCON2bits.INTEDG1 = 0; // Interrupcao externa INT1 na borda de descida
+    INTCON3bits.INT1IF = 0; // Limpa o flag bit da interrupcao extrena INT1
+    //INTCON3bits.INT1IP = 0;
+}
+
+void config_interrupcao0() {
+    INTCONbits.INT0IE = 1; // ativa a interrupcao externa INT0 (RB0)
+    INTCON2bits.INTEDG0 = 0; // Interrupcao externa INT0 na borda de descida
+    INTCONbits.INT0IF = 0; // Limpa o flag bit da interrupcao extrena INT0
+}
+
+void config_interrupcao() {
+    RCONbits.IPEN = 1; // Com nivel de prioridade
+    INTCONbits.GIEH = 1; // Habilita as interrupcoes de alta prioridade
+    INTCONbits.GIEL = 1; // Habilita as interrupcoes de baixa prioridade
+}
+
 void main(void) {
+
+    RBPU = 0; // Ativa resistores de Pull-Up para o PORT B
+    ADCON1 = 0x0F; // PORTA configurada como I/O digital
+
+    config_interrupcao();
+    //config_interrupcao0();
+    config_interrupcao1();
+    config_interrupcao2();
+    //config_timer0();
+        //TMR0 = 22000;
+
+    while (1) {
+        
+    }
 
     return;
 }
