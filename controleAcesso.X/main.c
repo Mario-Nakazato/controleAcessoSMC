@@ -139,6 +139,27 @@ int tecladoMatricial(){
     return tecla;
 }
 
+void config_ldc(){
+    //Inicializa??o do LCD
+    OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
+    WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
+    __delay_ms(8);  	 	        // Atraso de 10ms para aguardar a execu??o do comando
+    
+    TRISBbits.TRISB0 = 0;
+    TRISBbits.TRISB1 = 0;
+    TRISBbits.TRISB2 = 0;
+    TRISBbits.TRISB3 = 0;
+    TRISBbits.TRISB4 = 1;
+    TRISBbits.TRISB5 = 1;
+    TRISBbits.TRISB6 = 1;
+    TRISBbits.TRISB7 = 1;
+
+    PORTBbits.RB0 = 1;
+    PORTBbits.RB1 = 1;
+    PORTBbits.RB2 = 1;
+    PORTBbits.RB3 = 0;
+}
+
 void __interrupt() interrupcao(void) {
     if (INTCON3bits.INT1IF) {
         
@@ -204,35 +225,20 @@ void config_interrupcao() {
 
 void main(void) {
     
-    //Inicializa??o do LCD
-    OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
-    WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
-    __delay_ms(8);  	 	        // Atraso de 10ms para aguardar a execu??o do comando
-    
-    TRISBbits.TRISB0 = 0;
-    TRISBbits.TRISB1 = 0;
-    TRISBbits.TRISB2 = 0;
-    TRISBbits.TRISB3 = 0;
-    TRISBbits.TRISB4 = 1;
-    TRISBbits.TRISB5 = 1;
-    TRISBbits.TRISB6 = 1;
-    TRISBbits.TRISB7 = 1;
-
-    PORTBbits.RB0 = 1;
-    PORTBbits.RB1 = 1;
-    PORTBbits.RB2 = 1;
-    PORTBbits.RB3 = 0;
-    
     RBPU = 0; // Ativa resistores de Pull-Up para o PORT B
     //INTCON2bits.RBPU = 0;
     ADCON1 = 0x0F; // PORTA configurada como I/O digital
-
+    
+    TRISDbits.TRISD0 = 0; // LED
+    PORTDbits.RD0 = 0;
+    
     config_interrupcao();
     //config_interrupcao0();
     config_interrupcao1();
     config_interrupcao2();
     //config_timer0();
         //TMR0 = 22000;
+    config_ldc();
     
     WriteCmdXLCD(0x85);
     putsXLCD("*TXT*");
