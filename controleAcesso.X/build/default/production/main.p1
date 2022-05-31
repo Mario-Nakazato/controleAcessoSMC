@@ -2,16 +2,22 @@ Version 4.0 HI-TECH Software Intermediate Code
 "129 ./nxlcd.h
 [; ;./nxlcd.h: 129: void WriteCmdXLCD( unsigned char);
 [v _WriteCmdXLCD `(v ~T0 @X0 0 ef1`uc ]
+[v F3152 `(v ~T0 @X0 1 tf1`ul ]
+"183 C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18.h
+[v __delay `JF3152 ~T0 @X0 0 e ]
+[p i __delay ]
+"149 ./nxlcd.h
+[; ;./nxlcd.h: 149: void putrsXLCD(const char *);
+[v _putrsXLCD `(v ~T0 @X0 0 ef1`*Cuc ]
+"144
+[; ;./nxlcd.h: 144: void putsXLCD( char *);
+[v _putsXLCD `(v ~T0 @X0 0 ef1`*uc ]
 "134
 [; ;./nxlcd.h: 134: void WriteDataXLCD( char);
 [v _WriteDataXLCD `(v ~T0 @X0 0 ef1`uc ]
 "114
 [; ;./nxlcd.h: 114: unsigned char BusyXLCD(void);
 [v _BusyXLCD `(uc ~T0 @X0 0 ef ]
-[v F3152 `(v ~T0 @X0 1 tf1`ul ]
-"183 C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18.h
-[v __delay `JF3152 ~T0 @X0 0 e ]
-[p i __delay ]
 "2459 C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h
 [; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2459:     struct {
 [s S107 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -202,9 +208,6 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 7588: extern volatile RCONbits_t RCONbits __attribute__((address(0xFD0)));
 [v _RCONbits `VS321 ~T0 @X0 0 e@4048 ]
 [p mainexit ]
-"144 ./nxlcd.h
-[; ;./nxlcd.h: 144: void putsXLCD( char *);
-[v _putsXLCD `(v ~T0 @X0 0 ef1`*uc ]
 "13 main.c
 [p x PLLDIV = 1 ]
 "14
@@ -798,17 +801,46 @@ Version 4.0 HI-TECH Software Intermediate Code
 -> 193 `i
 ]
 "85
-[; ;main.c: 85: void lcd(int tecla){
+[; ;main.c: 85: void lcdTxt(char *txt){
+[v _lcdTxt `(v ~T0 @X0 1 ef1`*uc ]
+{
+[e :U _lcdTxt ]
+[v _txt `*uc ~T0 @X0 1 r1 ]
+[f ]
+"86
+[; ;main.c: 86:     WriteCmdXLCD(0x80);
+[e ( _WriteCmdXLCD (1 -> -> 128 `i `uc ]
+"87
+[; ;main.c: 87:     _delay((unsigned long)((4)*(20000000/4000.0)));
+[e ( __delay (1 -> * -> -> 4 `i `d / -> -> 20000000 `l `d .4000.0 `ul ]
+"88
+[; ;main.c: 88:     putrsXLCD(txt);
+[e ( _putrsXLCD (1 -> _txt `*Cuc ]
+"89
+[; ;main.c: 89:     WriteCmdXLCD(0xC0);
+[e ( _WriteCmdXLCD (1 -> -> 192 `i `uc ]
+"90
+[; ;main.c: 90:     putsXLCD(":");
+[e ( _putsXLCD (1 :s 1C ]
+"91
+[; ;main.c: 91:     WriteCmdXLCD(0xC1);
+[e ( _WriteCmdXLCD (1 -> -> 193 `i `uc ]
+"92
+[; ;main.c: 92: }
+[e :UE 367 ]
+}
+"94
+[; ;main.c: 94: void lcd(int tecla){
 [v _lcd `(v ~T0 @X0 1 ef1`i ]
 {
 [e :U _lcd ]
 [v _tecla `i ~T0 @X0 1 r1 ]
 [f ]
-[v F3183 `uc ~T0 @X0 -> 16 `i s ]
-[i F3183
+[v F3185 `uc ~T0 @X0 -> 16 `i s ]
+[i F3185
 :U ..
-"86
-[; ;main.c: 86:     char teclado[16] = {
+"95
+[; ;main.c: 95:     char teclado[16] = {
 -> -> 49 `ui `uc
 -> -> 50 `ui `uc
 -> -> 51 `ui `uc
@@ -828,519 +860,498 @@ Version 4.0 HI-TECH Software Intermediate Code
 ..
 ]
 [v _teclado `uc ~T0 @X0 -> 16 `i a ]
-[e = _teclado F3183 ]
-"93
-[; ;main.c: 93:     if(tecla != -1){
-[e $ ! != _tecla -U -> 1 `i 368  ]
-{
-"94
-[; ;main.c: 94:         if(teclado[tecla] == '*'){
-[e $ ! == -> *U + &U _teclado * -> -> _tecla `ui `ux -> -> # *U &U _teclado `ui `ux `ui -> 42 `ui 369  ]
-{
-"95
-[; ;main.c: 95:             cursor--;
-[e -- _cursor -> 1 `i ]
-"96
-[; ;main.c: 96:             WriteCmdXLCD(cursor);
-[e ( _WriteCmdXLCD (1 -> _cursor `uc ]
-"97
-[; ;main.c: 97:         }else if(teclado[tecla] == '#'){
-}
-[e $U 370  ]
-[e :U 369 ]
-[e $ ! == -> *U + &U _teclado * -> -> _tecla `ui `ux -> -> # *U &U _teclado `ui `ux `ui -> 35 `ui 371  ]
-{
-"98
-[; ;main.c: 98:             cursor++;
-[e ++ _cursor -> 1 `i ]
-"99
-[; ;main.c: 99:             WriteCmdXLCD(cursor);
-[e ( _WriteCmdXLCD (1 -> _cursor `uc ]
-"100
-[; ;main.c: 100:         }else{
-}
-[e $U 372  ]
-[e :U 371 ]
-{
-"101
-[; ;main.c: 101:             WriteCmdXLCD(cursor);
-[e ( _WriteCmdXLCD (1 -> _cursor `uc ]
+[e = _teclado F3185 ]
 "102
-[; ;main.c: 102:             WriteDataXLCD(teclado[tecla]);
-[e ( _WriteDataXLCD (1 *U + &U _teclado * -> -> _tecla `ui `ux -> -> # *U &U _teclado `ui `ux ]
+[; ;main.c: 102:     if(tecla != -1){
+[e $ ! != _tecla -U -> 1 `i 369  ]
+{
 "103
-[; ;main.c: 103:             cursor++;
-[e ++ _cursor -> 1 `i ]
+[; ;main.c: 103:         if(teclado[tecla] == '*'){
+[e $ ! == -> *U + &U _teclado * -> -> _tecla `ui `ux -> -> # *U &U _teclado `ui `ux `ui -> 42 `ui 370  ]
+{
 "104
-[; ;main.c: 104:         }
-}
-[e :U 372 ]
-[e :U 370 ]
+[; ;main.c: 104:             cursor--;
+[e -- _cursor -> 1 `i ]
 "105
-[; ;main.c: 105:         WriteCmdXLCD(cursor);
-[e ( _WriteCmdXLCD (1 -> _cursor `uc ]
-"106
-[; ;main.c: 106:     }
+[; ;main.c: 105:         }else if(teclado[tecla] == '#'){
 }
-[e :U 368 ]
+[e $U 371  ]
+[e :U 370 ]
+[e $ ! == -> *U + &U _teclado * -> -> _tecla `ui `ux -> -> # *U &U _teclado `ui `ux `ui -> 35 `ui 372  ]
+{
+"106
+[; ;main.c: 106:             cursor++;
+[e ++ _cursor -> 1 `i ]
 "107
-[; ;main.c: 107:     if(!BusyXLCD()){
-[e $ ! ! != -> ( _BusyXLCD ..  `i -> 0 `i 373  ]
+[; ;main.c: 107:         }else{
+}
+[e $U 373  ]
+[e :U 372 ]
 {
 "108
-[; ;main.c: 108:         _delay((unsigned long)((8)*(20000000/4000.0)));
-[e ( __delay (1 -> * -> -> 8 `i `d / -> -> 20000000 `l `d .4000.0 `ul ]
+[; ;main.c: 108:             WriteCmdXLCD(cursor);
+[e ( _WriteCmdXLCD (1 -> _cursor `uc ]
 "109
-[; ;main.c: 109:     }
+[; ;main.c: 109:             WriteDataXLCD(teclado[tecla]);
+[e ( _WriteDataXLCD (1 *U + &U _teclado * -> -> _tecla `ui `ux -> -> # *U &U _teclado `ui `ux ]
+"110
+[; ;main.c: 110:             cursor++;
+[e ++ _cursor -> 1 `i ]
+"111
+[; ;main.c: 111:         }
 }
 [e :U 373 ]
-"110
-[; ;main.c: 110: }
-[e :UE 367 ]
-}
+[e :U 371 ]
 "112
-[; ;main.c: 112: void varreduraTeclado(){
+[; ;main.c: 112:         WriteCmdXLCD(cursor);
+[e ( _WriteCmdXLCD (1 -> _cursor `uc ]
+"113
+[; ;main.c: 113:     }
+}
+[e :U 369 ]
+"114
+[; ;main.c: 114:     if(!BusyXLCD()){
+[e $ ! ! != -> ( _BusyXLCD ..  `i -> 0 `i 374  ]
+{
+"115
+[; ;main.c: 115:         _delay((unsigned long)((8)*(20000000/4000.0)));
+[e ( __delay (1 -> * -> -> 8 `i `d / -> -> 20000000 `l `d .4000.0 `ul ]
+"116
+[; ;main.c: 116:     }
+}
+[e :U 374 ]
+"117
+[; ;main.c: 117: }
+[e :UE 368 ]
+}
+"119
+[; ;main.c: 119: void varreduraTeclado(){
 [v _varreduraTeclado `(v ~T0 @X0 1 ef ]
 {
 [e :U _varreduraTeclado ]
 [f ]
-"113
-[; ;main.c: 113:     if(!PORTBbits.RB3){
-[e $ ! ! != -> . . _PORTBbits 0 3 `i -> 0 `i 375  ]
-{
-"114
-[; ;main.c: 114:         PORTBbits.RB3 = 1;
-[e = . . _PORTBbits 0 3 -> -> 1 `i `uc ]
-"115
-[; ;main.c: 115:         PORTBbits.RB2 = 0;
-[e = . . _PORTBbits 0 2 -> -> 0 `i `uc ]
-"116
-[; ;main.c: 116:     }else if(!PORTBbits.RB2){
-}
-[e $U 376  ]
-[e :U 375 ]
-[e $ ! ! != -> . . _PORTBbits 0 2 `i -> 0 `i 377  ]
-{
-"117
-[; ;main.c: 117:         PORTBbits.RB2 = 1;
-[e = . . _PORTBbits 0 2 -> -> 1 `i `uc ]
-"118
-[; ;main.c: 118:         PORTBbits.RB1 = 0;
-[e = . . _PORTBbits 0 1 -> -> 0 `i `uc ]
-"119
-[; ;main.c: 119:     }else if(!PORTBbits.RB1){
-}
-[e $U 378  ]
-[e :U 377 ]
-[e $ ! ! != -> . . _PORTBbits 0 1 `i -> 0 `i 379  ]
-{
 "120
-[; ;main.c: 120:         PORTBbits.RB1 = 1;
-[e = . . _PORTBbits 0 1 -> -> 1 `i `uc ]
-"121
-[; ;main.c: 121:         PORTBbits.RB0 = 0;
-[e = . . _PORTBbits 0 0 -> -> 0 `i `uc ]
-"122
-[; ;main.c: 122:     }else if(!PORTBbits.RB0){
-}
-[e $U 380  ]
-[e :U 379 ]
-[e $ ! ! != -> . . _PORTBbits 0 0 `i -> 0 `i 381  ]
+[; ;main.c: 120:     if(!PORTBbits.RB3){
+[e $ ! ! != -> . . _PORTBbits 0 3 `i -> 0 `i 376  ]
 {
+"121
+[; ;main.c: 121:         PORTBbits.RB3 = 1;
+[e = . . _PORTBbits 0 3 -> -> 1 `i `uc ]
+"122
+[; ;main.c: 122:         PORTBbits.RB2 = 0;
+[e = . . _PORTBbits 0 2 -> -> 0 `i `uc ]
 "123
-[; ;main.c: 123:         PORTBbits.RB0 = 1;
-[e = . . _PORTBbits 0 0 -> -> 1 `i `uc ]
-"124
-[; ;main.c: 124:         PORTBbits.RB3 = 0;
-[e = . . _PORTBbits 0 3 -> -> 0 `i `uc ]
-"125
-[; ;main.c: 125:     }
+[; ;main.c: 123:     }else if(!PORTBbits.RB2){
 }
-[e :U 381 ]
-[e :U 380 ]
-[e :U 378 ]
+[e $U 377  ]
 [e :U 376 ]
+[e $ ! ! != -> . . _PORTBbits 0 2 `i -> 0 `i 378  ]
+{
+"124
+[; ;main.c: 124:         PORTBbits.RB2 = 1;
+[e = . . _PORTBbits 0 2 -> -> 1 `i `uc ]
+"125
+[; ;main.c: 125:         PORTBbits.RB1 = 0;
+[e = . . _PORTBbits 0 1 -> -> 0 `i `uc ]
 "126
-[; ;main.c: 126:     PORTDbits.RD0 = !PORTDbits.RD0;
-[e = . . _PORTDbits 0 0 -> -> ! != -> . . _PORTDbits 0 0 `i -> 0 `i `i `uc ]
-"127
-[; ;main.c: 127: }
-[e :UE 374 ]
+[; ;main.c: 126:     }else if(!PORTBbits.RB1){
 }
+[e $U 379  ]
+[e :U 378 ]
+[e $ ! ! != -> . . _PORTBbits 0 1 `i -> 0 `i 380  ]
+{
+"127
+[; ;main.c: 127:         PORTBbits.RB1 = 1;
+[e = . . _PORTBbits 0 1 -> -> 1 `i `uc ]
+"128
+[; ;main.c: 128:         PORTBbits.RB0 = 0;
+[e = . . _PORTBbits 0 0 -> -> 0 `i `uc ]
 "129
-[; ;main.c: 129: int tecladoMatricial(){
+[; ;main.c: 129:     }else if(!PORTBbits.RB0){
+}
+[e $U 381  ]
+[e :U 380 ]
+[e $ ! ! != -> . . _PORTBbits 0 0 `i -> 0 `i 382  ]
+{
+"130
+[; ;main.c: 130:         PORTBbits.RB0 = 1;
+[e = . . _PORTBbits 0 0 -> -> 1 `i `uc ]
+"131
+[; ;main.c: 131:         PORTBbits.RB3 = 0;
+[e = . . _PORTBbits 0 3 -> -> 0 `i `uc ]
+"132
+[; ;main.c: 132:     }
+}
+[e :U 382 ]
+[e :U 381 ]
+[e :U 379 ]
+[e :U 377 ]
+"133
+[; ;main.c: 133:     PORTDbits.RD0 = !PORTDbits.RD0;
+[e = . . _PORTDbits 0 0 -> -> ! != -> . . _PORTDbits 0 0 `i -> 0 `i `i `uc ]
+"134
+[; ;main.c: 134: }
+[e :UE 375 ]
+}
+"136
+[; ;main.c: 136: int tecladoMatricial(){
 [v _tecladoMatricial `(i ~T0 @X0 1 ef ]
 {
 [e :U _tecladoMatricial ]
 [f ]
-"130
-[; ;main.c: 130:     int tecla;
-[v _tecla `i ~T0 @X0 1 a ]
-"131
-[; ;main.c: 131:     if(!PORTBbits.RB3){
-[e $ ! ! != -> . . _PORTBbits 0 3 `i -> 0 `i 383  ]
-{
-"132
-[; ;main.c: 132:         tecla = !PORTBbits.RB4 ? 0:
-[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 0 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 4 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 8 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 12 `i -U -> 1 `i ]
-"136
-[; ;main.c: 136:     }else if(!PORTBbits.RB2){
-}
-[e $U 384  ]
-[e :U 383 ]
-[e $ ! ! != -> . . _PORTBbits 0 2 `i -> 0 `i 385  ]
-{
 "137
-[; ;main.c: 137:         tecla = !PORTBbits.RB4 ? 1:
-[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 1 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 5 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 9 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 13 `i -U -> 1 `i ]
-"141
-[; ;main.c: 141:     }else if(!PORTBbits.RB1){
-}
-[e $U 386  ]
-[e :U 385 ]
-[e $ ! ! != -> . . _PORTBbits 0 1 `i -> 0 `i 387  ]
+[; ;main.c: 137:     int tecla;
+[v _tecla `i ~T0 @X0 1 a ]
+"138
+[; ;main.c: 138:     if(!PORTBbits.RB3){
+[e $ ! ! != -> . . _PORTBbits 0 3 `i -> 0 `i 384  ]
 {
-"142
-[; ;main.c: 142:         tecla = !PORTBbits.RB4 ? 2:
-[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 2 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 6 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 10 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 14 `i -U -> 1 `i ]
-"146
-[; ;main.c: 146:     }else if(!PORTBbits.RB0){
+"139
+[; ;main.c: 139:         tecla = !PORTBbits.RB4 ? 0:
+[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 0 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 4 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 8 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 12 `i -U -> 1 `i ]
+"143
+[; ;main.c: 143:     }else if(!PORTBbits.RB2){
 }
-[e $U 388  ]
-[e :U 387 ]
-[e $ ! ! != -> . . _PORTBbits 0 0 `i -> 0 `i 389  ]
-{
-"147
-[; ;main.c: 147:         tecla = !PORTBbits.RB4 ? 3:
-[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 3 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 7 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 11 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 15 `i -U -> 1 `i ]
-"151
-[; ;main.c: 151:     }
-}
-[e :U 389 ]
-[e :U 388 ]
-[e :U 386 ]
+[e $U 385  ]
 [e :U 384 ]
-"152
-[; ;main.c: 152:     return tecla;
-[e ) _tecla ]
-[e $UE 382  ]
-"153
-[; ;main.c: 153: }
-[e :UE 382 ]
+[e $ ! ! != -> . . _PORTBbits 0 2 `i -> 0 `i 386  ]
+{
+"144
+[; ;main.c: 144:         tecla = !PORTBbits.RB4 ? 1:
+[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 1 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 5 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 9 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 13 `i -U -> 1 `i ]
+"148
+[; ;main.c: 148:     }else if(!PORTBbits.RB1){
 }
-"155
-[; ;main.c: 155: void config_teclado(){
+[e $U 387  ]
+[e :U 386 ]
+[e $ ! ! != -> . . _PORTBbits 0 1 `i -> 0 `i 388  ]
+{
+"149
+[; ;main.c: 149:         tecla = !PORTBbits.RB4 ? 2:
+[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 2 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 6 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 10 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 14 `i -U -> 1 `i ]
+"153
+[; ;main.c: 153:     }else if(!PORTBbits.RB0){
+}
+[e $U 389  ]
+[e :U 388 ]
+[e $ ! ! != -> . . _PORTBbits 0 0 `i -> 0 `i 390  ]
+{
+"154
+[; ;main.c: 154:         tecla = !PORTBbits.RB4 ? 3:
+[e = _tecla ? ! != -> . . _PORTBbits 0 4 `i -> 0 `i : -> 3 `i ? ! != -> . . _PORTBbits 0 5 `i -> 0 `i : -> 7 `i ? ! != -> . . _PORTBbits 0 6 `i -> 0 `i : -> 11 `i ? ! != -> . . _PORTBbits 0 7 `i -> 0 `i : -> 15 `i -U -> 1 `i ]
+"158
+[; ;main.c: 158:     }
+}
+[e :U 390 ]
+[e :U 389 ]
+[e :U 387 ]
+[e :U 385 ]
+"159
+[; ;main.c: 159:     return tecla;
+[e ) _tecla ]
+[e $UE 383  ]
+"160
+[; ;main.c: 160: }
+[e :UE 383 ]
+}
+"162
+[; ;main.c: 162: void config_teclado(){
 [v _config_teclado `(v ~T0 @X0 1 ef ]
 {
 [e :U _config_teclado ]
 [f ]
-"156
-[; ;main.c: 156:     RBPU = 0;
-[e = _RBPU -> -> 0 `i `b ]
-"158
-[; ;main.c: 158:     ADCON1 = 0x0F;
-[e = _ADCON1 -> -> 15 `i `uc ]
-"160
-[; ;main.c: 160:     TRISBbits.TRISB0 = 0;
-[e = . . _TRISBbits 0 0 -> -> 0 `i `uc ]
-"161
-[; ;main.c: 161:     TRISBbits.TRISB1 = 0;
-[e = . . _TRISBbits 0 1 -> -> 0 `i `uc ]
-"162
-[; ;main.c: 162:     TRISBbits.TRISB2 = 0;
-[e = . . _TRISBbits 0 2 -> -> 0 `i `uc ]
 "163
-[; ;main.c: 163:     TRISBbits.TRISB3 = 0;
-[e = . . _TRISBbits 0 3 -> -> 0 `i `uc ]
-"164
-[; ;main.c: 164:     TRISBbits.TRISB4 = 1;
-[e = . . _TRISBbits 0 4 -> -> 1 `i `uc ]
+[; ;main.c: 163:     RBPU = 0;
+[e = _RBPU -> -> 0 `i `b ]
 "165
-[; ;main.c: 165:     TRISBbits.TRISB5 = 1;
-[e = . . _TRISBbits 0 5 -> -> 1 `i `uc ]
-"166
-[; ;main.c: 166:     TRISBbits.TRISB6 = 1;
-[e = . . _TRISBbits 0 6 -> -> 1 `i `uc ]
+[; ;main.c: 165:     ADCON1 = 0x0F;
+[e = _ADCON1 -> -> 15 `i `uc ]
 "167
-[; ;main.c: 167:     TRISBbits.TRISB7 = 1;
-[e = . . _TRISBbits 0 7 -> -> 1 `i `uc ]
+[; ;main.c: 167:     TRISBbits.TRISB0 = 0;
+[e = . . _TRISBbits 0 0 -> -> 0 `i `uc ]
+"168
+[; ;main.c: 168:     TRISBbits.TRISB1 = 0;
+[e = . . _TRISBbits 0 1 -> -> 0 `i `uc ]
 "169
-[; ;main.c: 169:     PORTBbits.RB0 = 1;
-[e = . . _PORTBbits 0 0 -> -> 1 `i `uc ]
+[; ;main.c: 169:     TRISBbits.TRISB2 = 0;
+[e = . . _TRISBbits 0 2 -> -> 0 `i `uc ]
 "170
-[; ;main.c: 170:     PORTBbits.RB1 = 1;
-[e = . . _PORTBbits 0 1 -> -> 1 `i `uc ]
+[; ;main.c: 170:     TRISBbits.TRISB3 = 0;
+[e = . . _TRISBbits 0 3 -> -> 0 `i `uc ]
 "171
-[; ;main.c: 171:     PORTBbits.RB2 = 1;
-[e = . . _PORTBbits 0 2 -> -> 1 `i `uc ]
+[; ;main.c: 171:     TRISBbits.TRISB4 = 1;
+[e = . . _TRISBbits 0 4 -> -> 1 `i `uc ]
 "172
-[; ;main.c: 172:     PORTBbits.RB3 = 0;
-[e = . . _PORTBbits 0 3 -> -> 0 `i `uc ]
+[; ;main.c: 172:     TRISBbits.TRISB5 = 1;
+[e = . . _TRISBbits 0 5 -> -> 1 `i `uc ]
 "173
-[; ;main.c: 173: }
-[e :UE 390 ]
-}
-"175
-[; ;main.c: 175: void config_ldc(){
-[v _config_ldc `(v ~T0 @X0 1 ef ]
-{
-[e :U _config_ldc ]
-[f ]
+[; ;main.c: 173:     TRISBbits.TRISB6 = 1;
+[e = . . _TRISBbits 0 6 -> -> 1 `i `uc ]
+"174
+[; ;main.c: 174:     TRISBbits.TRISB7 = 1;
+[e = . . _TRISBbits 0 7 -> -> 1 `i `uc ]
+"176
+[; ;main.c: 176:     PORTBbits.RB0 = 1;
+[e = . . _PORTBbits 0 0 -> -> 1 `i `uc ]
 "177
-[; ;main.c: 177:     OpenXLCD(0b00101100 & 0b00111000);
-[e ( _OpenXLCD (1 -> & -> 44 `i -> 56 `i `uc ]
+[; ;main.c: 177:     PORTBbits.RB1 = 1;
+[e = . . _PORTBbits 0 1 -> -> 1 `i `uc ]
 "178
-[; ;main.c: 178:     WriteCmdXLCD(0x01);
-[e ( _WriteCmdXLCD (1 -> -> 1 `i `uc ]
+[; ;main.c: 178:     PORTBbits.RB2 = 1;
+[e = . . _PORTBbits 0 2 -> -> 1 `i `uc ]
 "179
-[; ;main.c: 179:     _delay((unsigned long)((8)*(20000000/4000.0)));
-[e ( __delay (1 -> * -> -> 8 `i `d / -> -> 20000000 `l `d .4000.0 `ul ]
+[; ;main.c: 179:     PORTBbits.RB3 = 0;
+[e = . . _PORTBbits 0 3 -> -> 0 `i `uc ]
 "180
 [; ;main.c: 180: }
 [e :UE 391 ]
 }
 "182
-[; ;main.c: 182: void config_led(){
+[; ;main.c: 182: void config_ldc(){
+[v _config_ldc `(v ~T0 @X0 1 ef ]
+{
+[e :U _config_ldc ]
+[f ]
+"184
+[; ;main.c: 184:     OpenXLCD(0b00101100 & 0b00111000);
+[e ( _OpenXLCD (1 -> & -> 44 `i -> 56 `i `uc ]
+"185
+[; ;main.c: 185:     WriteCmdXLCD(0x01);
+[e ( _WriteCmdXLCD (1 -> -> 1 `i `uc ]
+"186
+[; ;main.c: 186:     lcdTxt("Fechadura");
+[e ( _lcdTxt (1 :s 2C ]
+"187
+[; ;main.c: 187: }
+[e :UE 392 ]
+}
+"189
+[; ;main.c: 189: void config_led(){
 [v _config_led `(v ~T0 @X0 1 ef ]
 {
 [e :U _config_led ]
 [f ]
-"183
-[; ;main.c: 183:     TRISDbits.TRISD0 = 0;
+"190
+[; ;main.c: 190:     TRISDbits.TRISD0 = 0;
 [e = . . _TRISDbits 0 0 -> -> 0 `i `uc ]
-"184
-[; ;main.c: 184:     PORTDbits.RD0 = 1;
+"191
+[; ;main.c: 191:     PORTDbits.RD0 = 1;
 [e = . . _PORTDbits 0 0 -> -> 1 `i `uc ]
-"185
-[; ;main.c: 185: }
-[e :UE 392 ]
+"192
+[; ;main.c: 192: }
+[e :UE 393 ]
 }
 [v $root$_interrupcao `(v ~T0 @X0 0 e ]
-"187
-[; ;main.c: 187: void __attribute__((picinterrupt(("")))) interrupcao(void) {
+"194
+[; ;main.c: 194: void __attribute__((picinterrupt(("")))) interrupcao(void) {
 [v _interrupcao `(v ~T36 @X0 1 ef ]
 {
 [e :U _interrupcao ]
 [f ]
-"188
-[; ;main.c: 188:     if (INTCON3bits.INT1IF) {
-[e $ ! != -> . . _INTCON3bits 0 0 `i -> 0 `i 394  ]
-{
-"190
-[; ;main.c: 190:         INTCON3bits.INT1IF = 0;
-[e = . . _INTCON3bits 0 0 -> -> 0 `i `uc ]
-"191
-[; ;main.c: 191:     } else if (INTCON3bits.INT2IF) {
-}
-[e $U 395  ]
-[e :U 394 ]
-[e $ ! != -> . . _INTCON3bits 0 1 `i -> 0 `i 396  ]
-{
-"193
-[; ;main.c: 193:         INTCON3bits.INT2IF = 0;
-[e = . . _INTCON3bits 0 1 -> -> 0 `i `uc ]
-"194
-[; ;main.c: 194:     } else if (INTCONbits.TMR0IF) {
-}
-[e $U 397  ]
-[e :U 396 ]
-[e $ ! != -> . . _INTCONbits 0 2 `i -> 0 `i 398  ]
-{
 "195
-[; ;main.c: 195:         varreduraTeclado();
-[e ( _varreduraTeclado ..  ]
-"196
-[; ;main.c: 196:         TMR0 = 100;
-[e = _TMR0 -> -> 100 `i `us ]
+[; ;main.c: 195:     if (INTCON3bits.INT1IF) {
+[e $ ! != -> . . _INTCON3bits 0 0 `i -> 0 `i 395  ]
+{
 "197
-[; ;main.c: 197:         INTCONbits.TMR0IF = 0;
-[e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
+[; ;main.c: 197:         INTCON3bits.INT1IF = 0;
+[e = . . _INTCON3bits 0 0 -> -> 0 `i `uc ]
 "198
-[; ;main.c: 198:     }
+[; ;main.c: 198:     } else if (INTCON3bits.INT2IF) {
 }
-[e :U 398 ]
-[e :U 397 ]
+[e $U 396  ]
 [e :U 395 ]
-"199
-[; ;main.c: 199: }
-[e :UE 393 ]
+[e $ ! != -> . . _INTCON3bits 0 1 `i -> 0 `i 397  ]
+{
+"200
+[; ;main.c: 200:         INTCON3bits.INT2IF = 0;
+[e = . . _INTCON3bits 0 1 -> -> 0 `i `uc ]
+"201
+[; ;main.c: 201:     } else if (INTCONbits.TMR0IF) {
 }
-"213
-[; ;main.c: 213: void config_timer0() {
+[e $U 398  ]
+[e :U 397 ]
+[e $ ! != -> . . _INTCONbits 0 2 `i -> 0 `i 399  ]
+{
+"202
+[; ;main.c: 202:         varreduraTeclado();
+[e ( _varreduraTeclado ..  ]
+"203
+[; ;main.c: 203:         TMR0 = 100;
+[e = _TMR0 -> -> 100 `i `us ]
+"204
+[; ;main.c: 204:         INTCONbits.TMR0IF = 0;
+[e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
+"205
+[; ;main.c: 205:     }
+}
+[e :U 399 ]
+[e :U 398 ]
+[e :U 396 ]
+"206
+[; ;main.c: 206: }
+[e :UE 394 ]
+}
+"220
+[; ;main.c: 220: void config_timer0() {
 [v _config_timer0 `(v ~T0 @X0 1 ef ]
 {
 [e :U _config_timer0 ]
 [f ]
-"214
-[; ;main.c: 214:     T0CONbits.TMR0ON = 1;
-[e = . . _T0CONbits 0 5 -> -> 1 `i `uc ]
-"215
-[; ;main.c: 215:     T0CONbits.T08BIT = 1;
-[e = . . _T0CONbits 0 4 -> -> 1 `i `uc ]
-"216
-[; ;main.c: 216:     T0CONbits.T0CS = 0;
-[e = . . _T0CONbits 0 3 -> -> 0 `i `uc ]
-"218
-[; ;main.c: 218:     T0CONbits.PSA = 1;
-[e = . . _T0CONbits 0 1 -> -> 1 `i `uc ]
-"219
-[; ;main.c: 219:     T0CONbits.T0PS2 = 1;
-[e = . . _T0CONbits 1 2 -> -> 1 `i `uc ]
-"220
-[; ;main.c: 220:     T0CONbits.T0PS1 = 0;
-[e = . . _T0CONbits 1 1 -> -> 0 `i `uc ]
 "221
-[; ;main.c: 221:     T0CONbits.T0PS0 = 0;
-[e = . . _T0CONbits 1 0 -> -> 0 `i `uc ]
+[; ;main.c: 221:     T0CONbits.TMR0ON = 1;
+[e = . . _T0CONbits 0 5 -> -> 1 `i `uc ]
 "222
-[; ;main.c: 222:     INTCONbits.TMR0IE = 1;
-[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
+[; ;main.c: 222:     T0CONbits.T08BIT = 1;
+[e = . . _T0CONbits 0 4 -> -> 1 `i `uc ]
 "223
-[; ;main.c: 223:     TMR0 = 100;
-[e = _TMR0 -> -> 100 `i `us ]
-"224
-[; ;main.c: 224: }
-[e :UE 399 ]
-}
+[; ;main.c: 223:     T0CONbits.T0CS = 0;
+[e = . . _T0CONbits 0 3 -> -> 0 `i `uc ]
+"225
+[; ;main.c: 225:     T0CONbits.PSA = 1;
+[e = . . _T0CONbits 0 1 -> -> 1 `i `uc ]
 "226
-[; ;main.c: 226: void config_interrupcao2() {
-[v _config_interrupcao2 `(v ~T0 @X0 1 ef ]
-{
-[e :U _config_interrupcao2 ]
-[f ]
+[; ;main.c: 226:     T0CONbits.T0PS2 = 1;
+[e = . . _T0CONbits 1 2 -> -> 1 `i `uc ]
 "227
-[; ;main.c: 227:     INTCON3bits.INT2IE = 1;
-[e = . . _INTCON3bits 0 4 -> -> 1 `i `uc ]
+[; ;main.c: 227:     T0CONbits.T0PS1 = 0;
+[e = . . _T0CONbits 1 1 -> -> 0 `i `uc ]
 "228
-[; ;main.c: 228:     INTCON2bits.INTEDG2 = 0;
-[e = . . _INTCON2bits 1 4 -> -> 0 `i `uc ]
+[; ;main.c: 228:     T0CONbits.T0PS0 = 0;
+[e = . . _T0CONbits 1 0 -> -> 0 `i `uc ]
 "229
-[; ;main.c: 229:     INTCON3bits.INT2IF = 0;
-[e = . . _INTCON3bits 0 1 -> -> 0 `i `uc ]
+[; ;main.c: 229:     INTCONbits.TMR0IE = 1;
+[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
+"230
+[; ;main.c: 230:     TMR0 = 100;
+[e = _TMR0 -> -> 100 `i `us ]
 "231
 [; ;main.c: 231: }
 [e :UE 400 ]
 }
 "233
-[; ;main.c: 233: void config_interrupcao1() {
-[v _config_interrupcao1 `(v ~T0 @X0 1 ef ]
+[; ;main.c: 233: void config_interrupcao2() {
+[v _config_interrupcao2 `(v ~T0 @X0 1 ef ]
 {
-[e :U _config_interrupcao1 ]
+[e :U _config_interrupcao2 ]
 [f ]
 "234
-[; ;main.c: 234:     INTCON3bits.INT1IE = 1;
-[e = . . _INTCON3bits 0 3 -> -> 1 `i `uc ]
+[; ;main.c: 234:     INTCON3bits.INT2IE = 1;
+[e = . . _INTCON3bits 0 4 -> -> 1 `i `uc ]
 "235
-[; ;main.c: 235:     INTCON2bits.INTEDG1 = 0;
-[e = . . _INTCON2bits 1 5 -> -> 0 `i `uc ]
+[; ;main.c: 235:     INTCON2bits.INTEDG2 = 0;
+[e = . . _INTCON2bits 1 4 -> -> 0 `i `uc ]
 "236
-[; ;main.c: 236:     INTCON3bits.INT1IF = 0;
-[e = . . _INTCON3bits 0 0 -> -> 0 `i `uc ]
+[; ;main.c: 236:     INTCON3bits.INT2IF = 0;
+[e = . . _INTCON3bits 0 1 -> -> 0 `i `uc ]
 "238
 [; ;main.c: 238: }
 [e :UE 401 ]
 }
 "240
-[; ;main.c: 240: void config_interrupcao0() {
+[; ;main.c: 240: void config_interrupcao1() {
+[v _config_interrupcao1 `(v ~T0 @X0 1 ef ]
+{
+[e :U _config_interrupcao1 ]
+[f ]
+"241
+[; ;main.c: 241:     INTCON3bits.INT1IE = 1;
+[e = . . _INTCON3bits 0 3 -> -> 1 `i `uc ]
+"242
+[; ;main.c: 242:     INTCON2bits.INTEDG1 = 0;
+[e = . . _INTCON2bits 1 5 -> -> 0 `i `uc ]
+"243
+[; ;main.c: 243:     INTCON3bits.INT1IF = 0;
+[e = . . _INTCON3bits 0 0 -> -> 0 `i `uc ]
+"245
+[; ;main.c: 245: }
+[e :UE 402 ]
+}
+"247
+[; ;main.c: 247: void config_interrupcao0() {
 [v _config_interrupcao0 `(v ~T0 @X0 1 ef ]
 {
 [e :U _config_interrupcao0 ]
 [f ]
-"241
-[; ;main.c: 241:     INTCONbits.INT0IE = 1;
+"248
+[; ;main.c: 248:     INTCONbits.INT0IE = 1;
 [e = . . _INTCONbits 0 4 -> -> 1 `i `uc ]
-"242
-[; ;main.c: 242:     INTCON2bits.INTEDG0 = 0;
+"249
+[; ;main.c: 249:     INTCON2bits.INTEDG0 = 0;
 [e = . . _INTCON2bits 1 6 -> -> 0 `i `uc ]
-"243
-[; ;main.c: 243:     INTCONbits.INT0IF = 0;
+"250
+[; ;main.c: 250:     INTCONbits.INT0IF = 0;
 [e = . . _INTCONbits 0 1 -> -> 0 `i `uc ]
-"244
-[; ;main.c: 244: }
-[e :UE 402 ]
+"251
+[; ;main.c: 251: }
+[e :UE 403 ]
 }
-"246
-[; ;main.c: 246: void config_interrupcao() {
+"253
+[; ;main.c: 253: void config_interrupcao() {
 [v _config_interrupcao `(v ~T0 @X0 1 ef ]
 {
 [e :U _config_interrupcao ]
 [f ]
-"247
-[; ;main.c: 247:     RCONbits.IPEN = 1;
+"254
+[; ;main.c: 254:     RCONbits.IPEN = 1;
 [e = . . _RCONbits 5 7 -> -> 1 `i `uc ]
-"248
-[; ;main.c: 248:     INTCONbits.GIEH = 1;
+"255
+[; ;main.c: 255:     INTCONbits.GIEH = 1;
 [e = . . _INTCONbits 2 2 -> -> 1 `i `uc ]
-"249
-[; ;main.c: 249:     INTCONbits.GIEL = 1;
+"256
+[; ;main.c: 256:     INTCONbits.GIEL = 1;
 [e = . . _INTCONbits 2 1 -> -> 1 `i `uc ]
-"250
-[; ;main.c: 250: }
-[e :UE 403 ]
+"257
+[; ;main.c: 257: }
+[e :UE 404 ]
 }
 [v $root$_main `(v ~T0 @X0 0 e ]
-"252
-[; ;main.c: 252: void main(void) {
+"259
+[; ;main.c: 259: void main(void) {
 [v _main `(v ~T0 @X0 1 ef ]
 {
 [e :U _main ]
 [f ]
-"254
-[; ;main.c: 254:     config_interrupcao();
-[e ( _config_interrupcao ..  ]
-"258
-[; ;main.c: 258:     config_timer0();
-[e ( _config_timer0 ..  ]
-"259
-[; ;main.c: 259:     config_led();
-[e ( _config_led ..  ]
-"260
-[; ;main.c: 260:     config_teclado();
-[e ( _config_teclado ..  ]
 "261
-[; ;main.c: 261:     config_ldc();
-[e ( _config_ldc ..  ]
-"263
-[; ;main.c: 263:     WriteCmdXLCD(0x80);
-[e ( _WriteCmdXLCD (1 -> -> 128 `i `uc ]
-"264
-[; ;main.c: 264:     putsXLCD("Fechadura");
-[e ( _putsXLCD (1 :s 1C ]
+[; ;main.c: 261:     config_interrupcao();
+[e ( _config_interrupcao ..  ]
 "265
-[; ;main.c: 265:     WriteCmdXLCD(0xC0);
-[e ( _WriteCmdXLCD (1 -> -> 192 `i `uc ]
+[; ;main.c: 265:     config_timer0();
+[e ( _config_timer0 ..  ]
 "266
-[; ;main.c: 266:     putsXLCD(":");
-[e ( _putsXLCD (1 :s 2C ]
+[; ;main.c: 266:     config_led();
+[e ( _config_led ..  ]
 "267
-[; ;main.c: 267:     WriteCmdXLCD(0xC1);
-[e ( _WriteCmdXLCD (1 -> -> 193 `i `uc ]
-"269
-[; ;main.c: 269:     int tecla, teclaAnterior;
+[; ;main.c: 267:     config_teclado();
+[e ( _config_teclado ..  ]
+"268
+[; ;main.c: 268:     config_ldc();
+[e ( _config_ldc ..  ]
+"270
+[; ;main.c: 270:     int tecla, teclaAnterior;
 [v _tecla `i ~T0 @X0 1 a ]
 [v _teclaAnterior `i ~T0 @X0 1 a ]
-"271
-[; ;main.c: 271:     while(1){
-[e :U 406 ]
-{
 "272
-[; ;main.c: 272:         tecla = tecladoMatricial();
-[e = _tecla ( _tecladoMatricial ..  ]
-"273
-[; ;main.c: 273:         lcd(tecla);
-[e ( _lcd (1 _tecla ]
-"275
-[; ;main.c: 275:     }
-}
-[e :U 405 ]
-[e $U 406  ]
+[; ;main.c: 272:     while(1){
 [e :U 407 ]
-"277
-[; ;main.c: 277:     return;
-[e $UE 404  ]
-"278
-[; ;main.c: 278: }
-[e :UE 404 ]
+{
+"273
+[; ;main.c: 273:         tecla = tecladoMatricial();
+[e = _tecla ( _tecladoMatricial ..  ]
+"274
+[; ;main.c: 274:         lcd(tecla);
+[e ( _lcd (1 _tecla ]
+"276
+[; ;main.c: 276:     }
 }
-[a 1C 70 101 99 104 97 100 117 114 97 0 ]
-[a 2C 58 0 ]
+[e :U 406 ]
+[e $U 407  ]
+[e :U 408 ]
+"278
+[; ;main.c: 278:     return;
+[e $UE 405  ]
+"279
+[; ;main.c: 279: }
+[e :UE 405 ]
+}
+[a 2C 70 101 99 104 97 100 117 114 97 0 ]
+[a 1C 58 0 ]

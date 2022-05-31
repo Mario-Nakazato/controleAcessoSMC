@@ -82,6 +82,15 @@
 
 int cursor = 0xC1;
 
+void lcdTxt(char *txt){
+    WriteCmdXLCD(0x80);
+    __delay_ms(4);
+    putrsXLCD(txt);
+    WriteCmdXLCD(0xC0);
+    putsXLCD(":");
+    WriteCmdXLCD(0xC1);
+}
+
 void lcd(int tecla){
     char teclado[16] = {
         '1', '2', '3', 'A',
@@ -93,10 +102,8 @@ void lcd(int tecla){
     if(tecla != -1){
         if(teclado[tecla] == '*'){
             cursor--;
-            WriteCmdXLCD(cursor);
         }else if(teclado[tecla] == '#'){
             cursor++;
-            WriteCmdXLCD(cursor);
         }else{
             WriteCmdXLCD(cursor);
             putcXLCD(teclado[tecla]);
@@ -176,7 +183,7 @@ void config_ldc(){
     //Inicializa??o do LCD
     OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
     WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
-    __delay_ms(8);  	 	        // Atraso de 10ms para aguardar a execu??o do comando
+    lcdTxt("Fechadura");
 }
 
 void config_led(){
@@ -260,12 +267,6 @@ void main(void) {
     config_teclado();
     config_ldc();
     
-    WriteCmdXLCD(0x80);
-    putsXLCD("Fechadura");
-    WriteCmdXLCD(0xC0);
-    putsXLCD(":");
-    WriteCmdXLCD(0xC1);
-        
     int tecla, teclaAnterior;
     
     while(1){

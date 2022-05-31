@@ -5749,6 +5749,15 @@ void putrsXLCD(const char *);
 
 int cursor = 0xC1;
 
+void lcdTxt(char *txt){
+    WriteCmdXLCD(0x80);
+    _delay((unsigned long)((4)*(20000000/4000.0)));
+    putrsXLCD(txt);
+    WriteCmdXLCD(0xC0);
+    putsXLCD(":");
+    WriteCmdXLCD(0xC1);
+}
+
 void lcd(int tecla){
     char teclado[16] = {
         '1', '2', '3', 'A',
@@ -5760,10 +5769,8 @@ void lcd(int tecla){
     if(tecla != -1){
         if(teclado[tecla] == '*'){
             cursor--;
-            WriteCmdXLCD(cursor);
         }else if(teclado[tecla] == '#'){
             cursor++;
-            WriteCmdXLCD(cursor);
         }else{
             WriteCmdXLCD(cursor);
             WriteDataXLCD(teclado[tecla]);
@@ -5843,7 +5850,7 @@ void config_ldc(){
 
     OpenXLCD(0b00101100 & 0b00111000);
     WriteCmdXLCD(0x01);
-    _delay((unsigned long)((8)*(20000000/4000.0)));
+    lcdTxt("Fechadura");
 }
 
 void config_led(){
@@ -5864,7 +5871,7 @@ void __attribute__((picinterrupt(("")))) interrupcao(void) {
         INTCONbits.TMR0IF = 0;
     }
 }
-# 213 "main.c"
+# 220 "main.c"
 void config_timer0() {
     T0CONbits.TMR0ON = 1;
     T0CONbits.T08BIT = 1;
@@ -5914,12 +5921,6 @@ void main(void) {
     config_led();
     config_teclado();
     config_ldc();
-
-    WriteCmdXLCD(0x80);
-    putsXLCD("Fechadura");
-    WriteCmdXLCD(0xC0);
-    putsXLCD(":");
-    WriteCmdXLCD(0xC1);
 
     int tecla, teclaAnterior;
 
