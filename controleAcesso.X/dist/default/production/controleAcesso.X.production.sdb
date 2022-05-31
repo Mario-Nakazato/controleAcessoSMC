@@ -27,25 +27,25 @@
 [v ___lmul __lmul `(ul  1 e 4 0 ]
 "91 C:\Program Files (x86)\Microchip\xc8\v2.05\pic\sources\c99\common\Umul64.c
 [v ___omul __omul `(uo  1 e 8 0 ]
-"83 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
+"85 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
 [v _lcd lcd `(v  1 e 1 0 ]
-"98
+"112
 [v _varreduraTeclado varreduraTeclado `(v  1 e 1 0 ]
-"115
+"129
 [v _tecladoMatricial tecladoMatricial `(i  1 e 2 0 ]
-"141
+"155
 [v _config_teclado config_teclado `(v  1 e 1 0 ]
-"161
+"175
 [v _config_ldc config_ldc `(v  1 e 1 0 ]
-"168
+"182
 [v _config_led config_led `(v  1 e 1 0 ]
-"173
+"187
 [v _interrupcao interrupcao `IIH(v  1 e 1 0 ]
-"199
+"213
 [v _config_timer0 config_timer0 `(v  1 e 1 0 ]
-"232
+"246
 [v _config_interrupcao config_interrupcao `(v  1 e 1 0 ]
-"238
+"252
 [v _main main `(v  1 e 1 0 ]
 "12 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\nxlcd.c
 [v _DelayFor18TCY DelayFor18TCY `(v  1 e 1 0 ]
@@ -65,7 +65,7 @@
 [v _WriteDataXLCD WriteDataXLCD `(v  1 e 1 0 ]
 "510
 [v _putsXLCD putsXLCD `(v  1 e 1 0 ]
-[s S34 . 1 `uc 1 RB0 1 0 :1:0 
+[s S44 . 1 `uc 1 RB0 1 0 :1:0 
 `uc 1 RB1 1 0 :1:1 
 `uc 1 RB2 1 0 :1:2 
 `uc 1 RB3 1 0 :1:3 
@@ -75,7 +75,7 @@
 `uc 1 RB7 1 0 :1:7 
 ]
 "2483 C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h
-[s S43 . 1 `uc 1 INT0 1 0 :1:0 
+[s S53 . 1 `uc 1 INT0 1 0 :1:0 
 `uc 1 INT1 1 0 :1:1 
 `uc 1 INT2 1 0 :1:2 
 `uc 1 . 1 0 :2:3 
@@ -83,14 +83,14 @@
 `uc 1 PGC 1 0 :1:6 
 `uc 1 PGD 1 0 :1:7 
 ]
-[s S51 . 1 `uc 1 . 1 0 :3:0 
+[s S61 . 1 `uc 1 . 1 0 :3:0 
 `uc 1 CCP2_PA2 1 0 :1:3 
 ]
-[u S54 . 1 `S34 1 . 1 0 `S43 1 . 1 0 `S51 1 . 1 0 ]
-[v _PORTBbits PORTBbits `VES54  1 e 1 @3969 ]
+[u S64 . 1 `S44 1 . 1 0 `S53 1 . 1 0 `S61 1 . 1 0 ]
+[v _PORTBbits PORTBbits `VES64  1 e 1 @3969 ]
 "2705
 [v _PORTD PORTD `VEuc  1 e 1 @3971 ]
-[s S79 . 1 `uc 1 RD0 1 0 :1:0 
+[s S89 . 1 `uc 1 RD0 1 0 :1:0 
 `uc 1 RD1 1 0 :1:1 
 `uc 1 RD2 1 0 :1:2 
 `uc 1 RD3 1 0 :1:3 
@@ -100,7 +100,7 @@
 `uc 1 RD7 1 0 :1:7 
 ]
 "2736
-[s S88 . 1 `uc 1 SPP0 1 0 :1:0 
+[s S98 . 1 `uc 1 SPP0 1 0 :1:0 
 `uc 1 SPP1 1 0 :1:1 
 `uc 1 SPP2 1 0 :1:2 
 `uc 1 SPP3 1 0 :1:3 
@@ -109,23 +109,23 @@
 `uc 1 SPP6 1 0 :1:6 
 `uc 1 SPP7 1 0 :1:7 
 ]
-[s S97 . 1 `uc 1 . 1 0 :7:0 
+[s S107 . 1 `uc 1 . 1 0 :7:0 
 `uc 1 SS2 1 0 :1:7 
 ]
-[u S100 . 1 `S79 1 . 1 0 `S88 1 . 1 0 `S97 1 . 1 0 ]
-[v _PORTDbits PORTDbits `VES100  1 e 1 @3971 ]
-[s S609 . 1 `uc 1 LATE0 1 0 :1:0 
+[u S110 . 1 `S89 1 . 1 0 `S98 1 . 1 0 `S107 1 . 1 0 ]
+[v _PORTDbits PORTDbits `VES110  1 e 1 @3971 ]
+[s S611 . 1 `uc 1 LATE0 1 0 :1:0 
 `uc 1 LATE1 1 0 :1:1 
 `uc 1 LATE2 1 0 :1:2 
 ]
 "3392
-[s S613 . 1 `uc 1 LE0 1 0 :1:0 
+[s S615 . 1 `uc 1 LE0 1 0 :1:0 
 `uc 1 LE1 1 0 :1:1 
 `uc 1 LE2 1 0 :1:2 
 ]
-[u S617 . 1 `S609 1 . 1 0 `S613 1 . 1 0 ]
-[v _LATEbits LATEbits `VES617  1 e 1 @3981 ]
-[s S128 . 1 `uc 1 TRISB0 1 0 :1:0 
+[u S619 . 1 `S611 1 . 1 0 `S615 1 . 1 0 ]
+[v _LATEbits LATEbits `VES619  1 e 1 @3981 ]
+[s S138 . 1 `uc 1 TRISB0 1 0 :1:0 
 `uc 1 TRISB1 1 0 :1:1 
 `uc 1 TRISB2 1 0 :1:2 
 `uc 1 TRISB3 1 0 :1:3 
@@ -135,11 +135,11 @@
 `uc 1 TRISB7 1 0 :1:7 
 ]
 "3657
-[u S146 . 1 `S128 1 . 1 0 `S34 1 . 1 0 ]
-[v _TRISBbits TRISBbits `VES146  1 e 1 @3987 ]
+[u S156 . 1 `S138 1 . 1 0 `S44 1 . 1 0 ]
+[v _TRISBbits TRISBbits `VES156  1 e 1 @3987 ]
 "4001
 [v _TRISD TRISD `VEuc  1 e 1 @3989 ]
-[s S179 . 1 `uc 1 TRISD0 1 0 :1:0 
+[s S183 . 1 `uc 1 TRISD0 1 0 :1:0 
 `uc 1 TRISD1 1 0 :1:1 
 `uc 1 TRISD2 1 0 :1:2 
 `uc 1 TRISD3 1 0 :1:3 
@@ -149,37 +149,37 @@
 `uc 1 TRISD7 1 0 :1:7 
 ]
 "4033
-[u S197 . 1 `S179 1 . 1 0 `S79 1 . 1 0 ]
-[v _TRISDbits TRISDbits `VES197  1 e 1 @3989 ]
-[s S589 . 1 `uc 1 TRISE0 1 0 :1:0 
+[u S201 . 1 `S183 1 . 1 0 `S89 1 . 1 0 ]
+[v _TRISDbits TRISDbits `VES201  1 e 1 @3989 ]
+[s S591 . 1 `uc 1 TRISE0 1 0 :1:0 
 `uc 1 TRISE1 1 0 :1:1 
 `uc 1 TRISE2 1 0 :1:2 
 ]
 "4245
-[s S593 . 1 `uc 1 RE0 1 0 :1:0 
+[s S595 . 1 `uc 1 RE0 1 0 :1:0 
 `uc 1 RE1 1 0 :1:1 
 `uc 1 RE2 1 0 :1:2 
 ]
-[u S597 . 1 `S589 1 . 1 0 `S593 1 . 1 0 ]
-[v _TRISEbits TRISEbits `VES597  1 e 1 @3990 ]
+[u S599 . 1 `S591 1 . 1 0 `S595 1 . 1 0 ]
+[v _TRISEbits TRISEbits `VES599  1 e 1 @3990 ]
 "6581
 [v _ADCON1 ADCON1 `VEuc  1 e 1 @4033 ]
-[s S374 . 1 `uc 1 NOT_BOR 1 0 :1:0 
+[s S378 . 1 `uc 1 NOT_BOR 1 0 :1:0 
 ]
 "7588
-[s S376 . 1 `uc 1 . 1 0 :1:0 
+[s S380 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 NOT_POR 1 0 :1:1 
 ]
-[s S379 . 1 `uc 1 . 1 0 :2:0 
+[s S383 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 NOT_PD 1 0 :1:2 
 ]
-[s S382 . 1 `uc 1 . 1 0 :3:0 
+[s S386 . 1 `uc 1 . 1 0 :3:0 
 `uc 1 NOT_TO 1 0 :1:3 
 ]
-[s S385 . 1 `uc 1 . 1 0 :4:0 
+[s S389 . 1 `uc 1 . 1 0 :4:0 
 `uc 1 NOT_RI 1 0 :1:4 
 ]
-[s S388 . 1 `uc 1 nBOR 1 0 :1:0 
+[s S392 . 1 `uc 1 nBOR 1 0 :1:0 
 `uc 1 nPOR 1 0 :1:1 
 `uc 1 nPD 1 0 :1:2 
 `uc 1 nTO 1 0 :1:3 
@@ -188,10 +188,10 @@
 `uc 1 SBOREN 1 0 :1:6 
 `uc 1 IPEN 1 0 :1:7 
 ]
-[s S397 . 1 `uc 1 . 1 0 :7:0 
+[s S401 . 1 `uc 1 . 1 0 :7:0 
 `uc 1 NOT_IPEN 1 0 :1:7 
 ]
-[s S400 . 1 `uc 1 BOR 1 0 :1:0 
+[s S404 . 1 `uc 1 BOR 1 0 :1:0 
 `uc 1 POR 1 0 :1:1 
 `uc 1 PD 1 0 :1:2 
 `uc 1 TO 1 0 :1:3 
@@ -199,9 +199,9 @@
 `uc 1 . 1 0 :2:5 
 `uc 1 nIPEN 1 0 :1:7 
 ]
-[u S408 . 1 `S374 1 . 1 0 `S376 1 . 1 0 `S379 1 . 1 0 `S382 1 . 1 0 `S385 1 . 1 0 `S388 1 . 1 0 `S397 1 . 1 0 `S400 1 . 1 0 ]
-[v _RCONbits RCONbits `VES408  1 e 1 @4048 ]
-[s S309 . 1 `uc 1 T0PS 1 0 :3:0 
+[u S412 . 1 `S378 1 . 1 0 `S380 1 . 1 0 `S383 1 . 1 0 `S386 1 . 1 0 `S389 1 . 1 0 `S392 1 . 1 0 `S401 1 . 1 0 `S404 1 . 1 0 ]
+[v _RCONbits RCONbits `VES412  1 e 1 @4048 ]
+[s S313 . 1 `uc 1 T0PS 1 0 :3:0 
 `uc 1 PSA 1 0 :1:3 
 `uc 1 T0SE 1 0 :1:4 
 `uc 1 T0CS 1 0 :1:5 
@@ -209,15 +209,15 @@
 `uc 1 TMR0ON 1 0 :1:7 
 ]
 "8089
-[s S316 . 1 `uc 1 T0PS0 1 0 :1:0 
+[s S320 . 1 `uc 1 T0PS0 1 0 :1:0 
 `uc 1 T0PS1 1 0 :1:1 
 `uc 1 T0PS2 1 0 :1:2 
 ]
-[u S320 . 1 `S309 1 . 1 0 `S316 1 . 1 0 ]
-[v _T0CONbits T0CONbits `VES320  1 e 1 @4053 ]
+[u S324 . 1 `S313 1 . 1 0 `S320 1 . 1 0 ]
+[v _T0CONbits T0CONbits `VES324  1 e 1 @4053 ]
 "8139
 [v _TMR0 TMR0 `VEus  1 e 2 @4054 ]
-[s S219 . 1 `uc 1 INT1IF 1 0 :1:0 
+[s S223 . 1 `uc 1 INT1IF 1 0 :1:0 
 `uc 1 INT2IF 1 0 :1:1 
 `uc 1 . 1 0 :1:2 
 `uc 1 INT1IE 1 0 :1:3 
@@ -227,7 +227,7 @@
 `uc 1 INT2IP 1 0 :1:7 
 ]
 "8440
-[s S228 . 1 `uc 1 INT1F 1 0 :1:0 
+[s S232 . 1 `uc 1 INT1F 1 0 :1:0 
 `uc 1 INT2F 1 0 :1:1 
 `uc 1 . 1 0 :1:2 
 `uc 1 INT1E 1 0 :1:3 
@@ -236,13 +236,13 @@
 `uc 1 INT1P 1 0 :1:6 
 `uc 1 INT2P 1 0 :1:7 
 ]
-[u S237 . 1 `S219 1 . 1 0 `S228 1 . 1 0 ]
-[v _INTCON3bits INTCON3bits `VES237  1 e 1 @4080 ]
-[s S335 . 1 `uc 1 . 1 0 :7:0 
+[u S241 . 1 `S223 1 . 1 0 `S232 1 . 1 0 ]
+[v _INTCON3bits INTCON3bits `VES241  1 e 1 @4080 ]
+[s S339 . 1 `uc 1 . 1 0 :7:0 
 `uc 1 NOT_RBPU 1 0 :1:7 
 ]
 "8532
-[s S338 . 1 `uc 1 RBIP 1 0 :1:0 
+[s S342 . 1 `uc 1 RBIP 1 0 :1:0 
 `uc 1 . 1 0 :1:1 
 `uc 1 TMR0IP 1 0 :1:2 
 `uc 1 . 1 0 :1:3 
@@ -251,14 +251,14 @@
 `uc 1 INTEDG0 1 0 :1:6 
 `uc 1 nRBPU 1 0 :1:7 
 ]
-[s S347 . 1 `uc 1 . 1 0 :2:0 
+[s S351 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 T0IP 1 0 :1:2 
 `uc 1 . 1 0 :4:3 
 `uc 1 RBPU 1 0 :1:7 
 ]
-[u S352 . 1 `S335 1 . 1 0 `S338 1 . 1 0 `S347 1 . 1 0 ]
-[v _INTCON2bits INTCON2bits `VES352  1 e 1 @4081 ]
-[s S259 . 1 `uc 1 RBIF 1 0 :1:0 
+[u S356 . 1 `S339 1 . 1 0 `S342 1 . 1 0 `S351 1 . 1 0 ]
+[v _INTCON2bits INTCON2bits `VES356  1 e 1 @4081 ]
+[s S263 . 1 `uc 1 RBIF 1 0 :1:0 
 `uc 1 INT0IF 1 0 :1:1 
 `uc 1 TMR0IF 1 0 :1:2 
 `uc 1 RBIE 1 0 :1:3 
@@ -268,7 +268,7 @@
 `uc 1 GIE_GIEH 1 0 :1:7 
 ]
 "8614
-[s S268 . 1 `uc 1 . 1 0 :1:0 
+[s S272 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 INT0F 1 0 :1:1 
 `uc 1 T0IF 1 0 :1:2 
 `uc 1 . 1 0 :1:3 
@@ -277,28 +277,29 @@
 `uc 1 PEIE 1 0 :1:6 
 `uc 1 GIE 1 0 :1:7 
 ]
-[s S277 . 1 `uc 1 . 1 0 :6:0 
+[s S281 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 GIEL 1 0 :1:6 
 `uc 1 GIEH 1 0 :1:7 
 ]
-[u S281 . 1 `S259 1 . 1 0 `S268 1 . 1 0 `S277 1 . 1 0 ]
-[v _INTCONbits INTCONbits `VES281  1 e 1 @4082 ]
+[u S285 . 1 `S263 1 . 1 0 `S272 1 . 1 0 `S281 1 . 1 0 ]
+[v _INTCONbits INTCONbits `VES285  1 e 1 @4082 ]
 "10392
 [v _RBPU RBPU `VEb  1 e 0 @32655 ]
-"238 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
+"83 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
+[v _cursor cursor `i  1 e 2 0 ]
+"252
 [v _main main `(v  1 e 1 0 ]
 {
-"253
-[v main@tecla tecla `i  1 a 2 32 ]
-[v main@teclaAnterior teclaAnterior `i  1 a 2 30 ]
-"267
+"269
+[v main@tecla tecla `i  1 a 2 29 ]
+"278
 } 0
-"115
+"129
 [v _tecladoMatricial tecladoMatricial `(i  1 e 2 0 ]
 {
-"116
+"130
 [v tecladoMatricial@tecla tecla `i  1 a 2 27 ]
-"139
+"153
 } 0
 "510 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\nxlcd.c
 [v _putsXLCD putsXLCD `(v  1 e 1 0 ]
@@ -306,15 +307,15 @@
 [v putsXLCD@buffer buffer `*.32uc  1 p 2 2 ]
 "519
 } 0
-"83 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
+"85 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
 [v _lcd lcd `(v  1 e 1 0 ]
 {
-"84
-[v lcd@teclado teclado `[16]uc  1 a 16 4 ]
-"83
+"86
+[v lcd@teclado teclado `[16]uc  1 a 16 5 ]
+"85
 [v lcd@tecla tecla `i  1 p 2 2 ]
-[v lcd@F3182 F3182 `[16]uc  1 s 16 F3182 ]
-"96
+[v lcd@F3183 F3183 `[16]uc  1 s 16 F3183 ]
+"110
 } 0
 "449 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\nxlcd.c
 [v _WriteDataXLCD WriteDataXLCD `(v  1 e 1 0 ]
@@ -325,25 +326,25 @@
 [v WriteDataXLCD@data data `uc  1 a 1 1 ]
 "496
 } 0
-"199 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
+"213 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
 [v _config_timer0 config_timer0 `(v  1 e 1 0 ]
 {
-"210
+"224
 } 0
-"141
+"155
 [v _config_teclado config_teclado `(v  1 e 1 0 ]
 {
-"159
+"173
 } 0
-"168
+"182
 [v _config_led config_led `(v  1 e 1 0 ]
 {
-"171
+"185
 } 0
-"161
+"175
 [v _config_ldc config_ldc `(v  1 e 1 0 ]
 {
-"166
+"180
 } 0
 "41 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\nxlcd.c
 [v _OpenXLCD OpenXLCD `(v  1 e 1 0 ]
@@ -392,18 +393,18 @@
 {
 "15
 } 0
-"232 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
+"246 C:\Users\Notebook\Documents\Projeto\controleAcessoSMC\controleAcesso.X\main.c
 [v _config_interrupcao config_interrupcao `(v  1 e 1 0 ]
 {
-"236
+"250
 } 0
-"173
+"187
 [v _interrupcao interrupcao `IIH(v  1 e 1 0 ]
 {
-"185
+"199
 } 0
-"98
+"112
 [v _varreduraTeclado varreduraTeclado `(v  1 e 1 0 ]
 {
-"113
+"127
 } 0

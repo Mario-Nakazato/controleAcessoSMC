@@ -80,18 +80,32 @@
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
 #define LOADTMR0 100
 
+int cursor = 0xC1;
+
 void lcd(int tecla){
     char teclado[16] = {
         '1', '2', '3', 'A',
         '4', '5', '6', 'B',
         '7', '8', '9', 'C',
-        'F', '0', 'E', 'D'
+        '*', '0', '#', 'D'
     };
     
     if(tecla != -1){
-        WriteCmdXLCD(0xC7);
-        putcXLCD(teclado[tecla]);
-        WriteCmdXLCD(0xC7);
+        if(teclado[tecla] == '*'){
+            cursor--;
+            WriteCmdXLCD(cursor);
+        }else if(teclado[tecla] == '#'){
+            cursor++;
+            WriteCmdXLCD(cursor);
+        }else{
+            WriteCmdXLCD(cursor);
+            putcXLCD(teclado[tecla]);
+            cursor++;
+        }
+        WriteCmdXLCD(cursor);
+    }
+    if(!BusyXLCD()){
+        __delay_ms(8);
     }
 }
 
@@ -246,21 +260,18 @@ void main(void) {
     config_teclado();
     config_ldc();
     
-    WriteCmdXLCD(0x85);
-    putsXLCD("*TXT*");
-    WriteCmdXLCD(0xC7);
+    WriteCmdXLCD(0x80);
+    putsXLCD("Fechadura");
+    WriteCmdXLCD(0xC0);
+    putsXLCD(":");
+    WriteCmdXLCD(0xC1);
         
     int tecla, teclaAnterior;
     
     while(1){
         tecla = tecladoMatricial();
-        if(tecla != teclaAnterior){
-            lcd(tecla);
-        }
-        teclaAnterior = tecla;
-        if(!BusyXLCD()){
-            __delay_ms(8);
-        }
+        lcd(tecla);
+        
     }
 
     return;
