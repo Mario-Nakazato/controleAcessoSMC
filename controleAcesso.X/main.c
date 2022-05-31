@@ -75,8 +75,69 @@
 // Use project enums instead of #define for ON and OFF.
 
 #include <xc.h>
+#include "nxlcd.h"
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
+
+void lcd(int tecla){
+    char teclado[16] = {
+        '1', '2', '3', 'A',
+        '4', '5', '6', 'B',
+        '7', '8', '9', 'C',
+        'F', '0', 'E', 'D'
+    };
+    
+    if(tecla != -1){
+        WriteCmdXLCD(0xC7);
+        putcXLCD(teclado[tecla]);
+        WriteCmdXLCD(0xC7);
+    }
+}
+
+int tecladoMatricial(){
+    int tecla;
+    if(!PORTBbits.RB3){
+        tecla = !PORTBbits.RB4 ? 0: 
+                !PORTBbits.RB5 ? 4: 
+                !PORTBbits.RB6 ? 8: 
+                !PORTBbits.RB7 ? 12: -1;
+        if(tecla == -1){
+            PORTBbits.RB3 = 1;
+            PORTBbits.RB2 = 0;
+        }
+    }
+    if(!PORTBbits.RB2){
+        tecla = !PORTBbits.RB4 ? 1: 
+                !PORTBbits.RB5 ? 5: 
+                !PORTBbits.RB6 ? 9: 
+                !PORTBbits.RB7 ? 13: -1;
+        if(tecla == -1){
+            PORTBbits.RB2 = 1;
+            PORTBbits.RB1 = 0;
+        }
+    }
+    if(!PORTBbits.RB1){
+        tecla = !PORTBbits.RB4 ? 2: 
+                !PORTBbits.RB5 ? 6: 
+                !PORTBbits.RB6 ? 10: 
+                !PORTBbits.RB7 ? 14: -1;
+        if(tecla == -1){
+            PORTBbits.RB1 = 1;
+            PORTBbits.RB0 = 0;
+        }
+    }
+    if(!PORTBbits.RB0){
+        tecla = !PORTBbits.RB4 ? 3: 
+                !PORTBbits.RB5 ? 7: 
+                !PORTBbits.RB6 ? 11: 
+                !PORTBbits.RB7 ? 15: -1;
+        if(tecla == -1){
+            PORTBbits.RB0 = 1;
+            PORTBbits.RB3 = 0;
+        }
+    }
+    return tecla;
+}
 
 void __interrupt() interrupcao(void) {
     if (INTCON3bits.INT1IF) {
@@ -142,8 +203,28 @@ void config_interrupcao() {
 }
 
 void main(void) {
+    
+    //Inicializa??o do LCD
+    OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
+    WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
+    __delay_ms(8);  	 	        // Atraso de 10ms para aguardar a execu??o do comando
+    
+    TRISBbits.TRISB0 = 0;
+    TRISBbits.TRISB1 = 0;
+    TRISBbits.TRISB2 = 0;
+    TRISBbits.TRISB3 = 0;
+    TRISBbits.TRISB4 = 1;
+    TRISBbits.TRISB5 = 1;
+    TRISBbits.TRISB6 = 1;
+    TRISBbits.TRISB7 = 1;
 
+    PORTBbits.RB0 = 1;
+    PORTBbits.RB1 = 1;
+    PORTBbits.RB2 = 1;
+    PORTBbits.RB3 = 0;
+    
     RBPU = 0; // Ativa resistores de Pull-Up para o PORT B
+    //INTCON2bits.RBPU = 0;
     ADCON1 = 0x0F; // PORTA configurada como I/O digital
 
     config_interrupcao();
@@ -152,9 +233,22 @@ void main(void) {
     config_interrupcao2();
     //config_timer0();
         //TMR0 = 22000;
-
-    while (1) {
+    
+    WriteCmdXLCD(0x85);
+    putsXLCD("*TXT*");
+    WriteCmdXLCD(0xC7);
         
+    int tecla, teclaAnterior;
+    
+    while(1){
+        tecla = tecladoMatricial();
+        if(tecla != teclaAnterior){
+            lcd(tecla);
+        }
+        teclaAnterior = tecla;
+        if(!BusyXLCD()){
+            __delay_ms(8);
+        }
     }
 
     return;
