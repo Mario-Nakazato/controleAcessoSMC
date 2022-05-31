@@ -78,6 +78,7 @@
 #include "nxlcd.h"
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
+#define LOADTMR0 100
 
 void lcd(int tecla){
     char teclado[16] = {
@@ -94,6 +95,23 @@ void lcd(int tecla){
     }
 }
 
+void varreduraTeclado(){
+    if(!PORTBbits.RB3){
+        PORTBbits.RB3 = 1;
+        PORTBbits.RB2 = 0;
+    }else if(!PORTBbits.RB2){
+        PORTBbits.RB2 = 1;
+        PORTBbits.RB1 = 0;
+    }else if(!PORTBbits.RB1){
+        PORTBbits.RB1 = 1;
+        PORTBbits.RB0 = 0;
+    }else if(!PORTBbits.RB0){
+        PORTBbits.RB0 = 1;
+        PORTBbits.RB3 = 0;
+    }
+    PORTDbits.RD0 = !PORTDbits.RD0;
+}
+
 int tecladoMatricial(){
     int tecla;
     if(!PORTBbits.RB3){
@@ -101,49 +119,29 @@ int tecladoMatricial(){
                 !PORTBbits.RB5 ? 4: 
                 !PORTBbits.RB6 ? 8: 
                 !PORTBbits.RB7 ? 12: -1;
-        if(tecla == -1){
-            PORTBbits.RB3 = 1;
-            PORTBbits.RB2 = 0;
-        }
-    }
-    if(!PORTBbits.RB2){
+    }else if(!PORTBbits.RB2){
         tecla = !PORTBbits.RB4 ? 1: 
                 !PORTBbits.RB5 ? 5: 
                 !PORTBbits.RB6 ? 9: 
                 !PORTBbits.RB7 ? 13: -1;
-        if(tecla == -1){
-            PORTBbits.RB2 = 1;
-            PORTBbits.RB1 = 0;
-        }
-    }
-    if(!PORTBbits.RB1){
+    }else if(!PORTBbits.RB1){
         tecla = !PORTBbits.RB4 ? 2: 
                 !PORTBbits.RB5 ? 6: 
                 !PORTBbits.RB6 ? 10: 
                 !PORTBbits.RB7 ? 14: -1;
-        if(tecla == -1){
-            PORTBbits.RB1 = 1;
-            PORTBbits.RB0 = 0;
-        }
-    }
-    if(!PORTBbits.RB0){
+    }else if(!PORTBbits.RB0){
         tecla = !PORTBbits.RB4 ? 3: 
                 !PORTBbits.RB5 ? 7: 
                 !PORTBbits.RB6 ? 11: 
                 !PORTBbits.RB7 ? 15: -1;
-        if(tecla == -1){
-            PORTBbits.RB0 = 1;
-            PORTBbits.RB3 = 0;
-        }
     }
     return tecla;
 }
 
-void config_ldc(){
-    //Inicializa??o do LCD
-    OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
-    WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
-    __delay_ms(8);  	 	        // Atraso de 10ms para aguardar a execu??o do comando
+void config_teclado(){
+    RBPU = 0; // Ativa resistores de Pull-Up para o PORT B
+    //INTCON2bits.RBPU = 0;
+    ADCON1 = 0x0F; // PORTA configurada como I/O digital
     
     TRISBbits.TRISB0 = 0;
     TRISBbits.TRISB1 = 0;
@@ -160,6 +158,18 @@ void config_ldc(){
     PORTBbits.RB3 = 0;
 }
 
+void config_ldc(){
+    //Inicializa??o do LCD
+    OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
+    WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
+    __delay_ms(8);  	 	        // Atraso de 10ms para aguardar a execu??o do comando
+}
+
+void config_led(){
+    TRISDbits.TRISD0 = 0;
+    PORTDbits.RD0 = 1;
+}
+
 void __interrupt() interrupcao(void) {
     if (INTCON3bits.INT1IF) {
         
@@ -167,10 +177,11 @@ void __interrupt() interrupcao(void) {
     } else if (INTCON3bits.INT2IF) {
         
         INTCON3bits.INT2IF = 0;
-    /*} else if (INTCONbits.TMR0IF) {
-        modo = 3;
+    } else if (INTCONbits.TMR0IF) {
+        varreduraTeclado();
+        TMR0 = LOADTMR0;
         INTCONbits.TMR0IF = 0;
-    */}
+    }
 }
 
 /*
@@ -187,14 +198,15 @@ void __interrupt(high_priority) interrupcao_alta(void){
 
 void config_timer0() {
     T0CONbits.TMR0ON = 1; // Habilitar timer
-    T0CONbits.T08BIT = 0; // 8-bits ou 16-bits
+    T0CONbits.T08BIT = 1; // 8-bits ou 16-bits
     T0CONbits.T0CS = 0; // clock interno do microcontrolador
     //T0CONbits.T0SE = 0;
     T0CONbits.PSA = 1; // Usar prescaler
     T0CONbits.T0PS2 = 1;
-    T0CONbits.T0PS1 = 1;
-    T0CONbits.T0PS0 = 1;
+    T0CONbits.T0PS1 = 0;
+    T0CONbits.T0PS0 = 0;
     INTCONbits.TMR0IE = 1; // Habilitar Timer
+    TMR0 = LOADTMR0;
 }
 
 void config_interrupcao2() {
@@ -225,19 +237,13 @@ void config_interrupcao() {
 
 void main(void) {
     
-    RBPU = 0; // Ativa resistores de Pull-Up para o PORT B
-    //INTCON2bits.RBPU = 0;
-    ADCON1 = 0x0F; // PORTA configurada como I/O digital
-    
-    TRISDbits.TRISD0 = 0; // LED
-    PORTDbits.RD0 = 0;
-    
     config_interrupcao();
     //config_interrupcao0();
-    config_interrupcao1();
-    config_interrupcao2();
-    //config_timer0();
-        //TMR0 = 22000;
+    //config_interrupcao1();
+    //config_interrupcao2();
+    config_timer0();
+    config_led();
+    config_teclado();
     config_ldc();
     
     WriteCmdXLCD(0x85);
