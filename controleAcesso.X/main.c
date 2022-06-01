@@ -77,6 +77,7 @@
 #include <xc.h>
 #include <string.h>
 #include "nxlcd.h"
+#include <stdio.h>
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
 #define CAMADA_TECLADO 3
@@ -96,6 +97,8 @@
 int cursor = LINHA2 +1;
 
 void lcdTxt(int linha, char *txt){
+    WriteCmdXLCD(linha);
+    putrsXLCD("                ");
     WriteCmdXLCD(linha);
     putrsXLCD(txt);
 }
@@ -339,6 +342,15 @@ int verificaMemoria(){
     }
     else return 1;
 }
+void putch(unsigned char data) {
+    while( ! PIR1bits.TXIF)          // wait until the transmitter is ready
+        continue;
+    TXREG = data;                     // send one character
+}
+void init_uart(void) {
+    TXSTAbits.TXEN = 1;               // enable transmitter
+    RCSTAbits.SPEN = 1;               // enable serial port
+}
 
 
 void main(void) {
@@ -352,37 +364,43 @@ void main(void) {
     config_led();
     config_teclado();
     config_ldc();
-    
+        
     int tecla = -1, teclaAnterior = -1, camada = 0;
     int senha[4]; 
     char nomeTranca[CARACTER_MAX],opc;
     int ctrl,i,j,n;
     int senhaAtual[4], senhaAdmin[4];
     
+    init_uart();
+    
     if(verificaMemoria()){
+        printf("Escreve na memory");
         EEPROM_Guardar(0,'S');
         for (i=MMRINIT1;i<MMREND1;i++){
-            EEPROM_Guardar(i,0);
-            senhaAtual[i] = 0;
-            EEPROM_Guardar(i+4,i+1);
-            senhaAdmin[i] = i+1;
+            EEPROM_Guardar(i,1);
+            senhaAtual[i] = 1;
+            EEPROM_Guardar(i+4,i);
+            senhaAdmin[i] = i;
         }
-        strcpy(nomeTranca,"Tranca");
+        strcpy(nomeTranca,"Trunca");
         n = strlen(nomeTranca);
         
         j=0;
-        for(i=MMRINIT3;i<MMREND3;i++){
+        for(i=MMRINIT3;i<MMREND3-1;i++){
             EEPROM_Guardar(i,nomeTranca[j]);
             j++;
         }
         EEPROM_Guardar(j,'/');
         
     }else{
-        for (i=1;i<5;i++){
+        for (i=MMRINIT1;i<MMREND1;i++){
             senhaAtual[i] = atoi(EEPROM_Ler(i));
+            printf("%d",senhaAtual[i]);
         }
-        for (i= 5;i<9;i++){
+        printf("\n");
+        for (i=MMRINIT2;i<MMREND2;i++){
             senhaAdmin[i] = atoi(EEPROM_Ler(i));
+            printf("%d",senhaAdmin[i]);
         }
     }
     
@@ -393,7 +411,10 @@ void main(void) {
         nomeTranca[j]=EEPROM_Ler(i);
         j++;
         i++;
-    }    
+    }
+    
+    lcdTxt(LINHA1,nomeTranca);
+    lcdTxt(LINHA2,":");
     
     while(1){
         tecla = tecladoMatricial(tecla);
@@ -449,26 +470,30 @@ void main(void) {
             //Opção A
             if(opc == 'A'){
                 //Altera memoria
-                EEPROM_Guardar(0,'S');
-                //Carrega na memória a senha da tranca nova
-                for(int i=1;i<5;i++){
-                    EEPROM_Guardar(i,senhaAtual[i-1]);
+                for(i=MMRINIT1;i<MMREND1;i++){
+                    j=0;
+                    EEPROM_Guardar(i,senhaAtual[j]);
+                    j++;
                 }
             }
             //Opção B
-                //Altera memoria
-                EEPROM_Guardar(0,'S');
+            if(opc == 'B'){
                 //Carrega na memória a senha de admin nova
-                for(int i=5;i<9;i++){
+                for(i=MMRINIT2;i<MMREND2;i++){
+                    j=0;
                     EEPROM_Guardar(i,senhaAtual[i-5]);
+                    j++;
                 }
+            }
             //Opção C
-                //Altera memoria
-                EEPROM_Guardar(0,'S');
+            if(opc == 'C'){
                 //Carrega na memória a senha de admin nova
-                for(int i=9;i<(i+CARACTER_MAX);i++){
+                for(i=MMRINIT3;i<MMREND3;i++){
+                    j=0;
                     EEPROM_Guardar(i,nomeTranca[i-9]);
+                    j++;
                 }
+            }
             //Opção D
                 //Atualiza display
                 //Sai da opcao
