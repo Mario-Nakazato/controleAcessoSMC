@@ -78,7 +78,9 @@
 #include "nxlcd.h"
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
+#define CAMADA_TECLADO 3
 #define LOADTMR0 100
+#define LOADTMR1 0
 #define CARACTER_MAX 16
 #define CARACTER_MIN 1
 #define LINHA1 0x80
@@ -91,24 +93,40 @@ void lcdTxt(int linha, char *txt){
     putrsXLCD(txt);
 }
 
-void lcd(int tecla){
-    char teclado[16] = {
+void lcd(int tecla, int camada){
+    char teclado[3][16] = {
+        {
         '1', '2', '3', 'A',
         '4', '5', '6', 'B',
         '7', '8', '9', 'C',
         '*', '0', '#', 'D'
+        },
+        {
+        'G', 'H', 'I', 'J',
+        'K', 'L', 'M', 'N',
+        'O', 'P', 'Q', 'R',
+        'F', 'S', 'E', 'T'
+        },
+        {
+        'U', 'V', 'W', 'X',
+        'Y', 'Z', '?', '!',
+        '"', '"', '(', ')',
+        'esquerda', '0', 'E', ' '
+        }
     };
     
     if(tecla != -1){
-        if(teclado[tecla] == '*' && cursor > LINHA2 +CARACTER_MIN){
+        if(teclado[camada][tecla] == 'esquerda' && cursor > LINHA2 +CARACTER_MIN){
             cursor--;
-        }else if(teclado[tecla] == '#' && cursor < LINHA2 +CARACTER_MAX){
+        }else if(teclado[camada][tecla] == ' ' && cursor < LINHA2 +CARACTER_MAX){
             cursor++;
-        }else if(teclado[tecla] != '*' && teclado[tecla] != '#'){
+        }else if(teclado[camada][tecla] != 'esquerda' && teclado[camada][tecla] != '#'){
             if(cursor < LINHA2 +CARACTER_MAX){
                 WriteCmdXLCD(cursor);
-                putcXLCD(teclado[tecla]);
-                cursor++;
+                putcXLCD(teclado[camada][tecla]);
+                if(T1CONbits.TMR1ON == 0){
+                    cursor++;
+                }
             }
         }
         WriteCmdXLCD(cursor);
@@ -133,7 +151,7 @@ void varreduraTeclado(){
         PORTBbits.RB3 = 0;
     }
     TMR0 = LOADTMR0;
-    PORTDbits.RD0 = !PORTDbits.RD0;
+    //PORTDbits.RD0 = !PORTDbits.RD0;
 }
 
 int tecladoMatricial(int tecla){
@@ -164,6 +182,8 @@ int tecladoMatricial(int tecla){
     if(tecla == -1 && !T0CONbits.TMR0ON){
         TMR0 = LOADTMR0;
         T0CONbits.TMR0ON = 1;
+        TMR1 = LOADTMR1;
+        T1CONbits.TMR1ON = 1;
     }
     return tecla;
 }
@@ -212,6 +232,10 @@ void __interrupt() interrupcao(void) {
         varreduraTeclado();
         //TMR0 = LOADTMR0;
         INTCONbits.TMR0IF = 0;
+    } else if (PIR1bits.TMR1IF) {
+        PORTDbits.RD0 = !PORTDbits.RD0;
+        T1CONbits.TMR1ON = 0;
+        PIR1bits.TMR1IF = 0;
     }
 }
 
@@ -226,6 +250,18 @@ void __interrupt(high_priority) interrupcao_alta(void){
     INTCONbits.INT0IF = 0; // Limpa o flag bit da interrupcao extrena INT0
 }
  */
+
+void config_timer1() {
+    TMR1H = 0x00;
+    TMR1L = 0x00;
+    T1CONbits.TMR1ON = 1; // Habilitar timer
+    T1CONbits.RD16 = 0; // 8-bits ou 16-bits
+    T1CONbits.TMR1CS = 0; // clock interno do microcontrolador
+    T1CONbits.T1CKPS1 = 1;
+    T1CONbits.T1CKPS0 = 1;
+    PIE1bits.TMR1IE = 1; // Habilitar Timer
+    TMR1 = LOADTMR1;
+}
 
 void config_timer0() {
     T0CONbits.TMR0ON = 1; // Habilitar timer
@@ -273,16 +309,26 @@ void main(void) {
     //config_interrupcao1();
     //config_interrupcao2();
     config_timer0();
+    config_timer1();
     config_led();
     config_teclado();
     config_ldc();
     
-    int tecla = -1, teclaAnterior = -1;
+    int tecla = -1, teclaAnterior = -1, camada = 0;
     
     while(1){
         tecla = tecladoMatricial(tecla);
+        if(T1CONbits.TMR1ON == 1){
+            if(camada < CAMADA_TECLADO){
+                camada++;
+            }else{
+                camada = 0;
+            }
+        }else{
+            camada = 0;
+        }
         if(teclaAnterior == -1 && tecla != teclaAnterior){
-            lcd(tecla);
+            lcd(tecla, camada);
         }
         teclaAnterior = tecla;
     }
