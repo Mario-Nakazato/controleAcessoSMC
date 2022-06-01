@@ -75,6 +75,7 @@
 // Use project enums instead of #define for ON and OFF.
 
 #include <xc.h>
+#include <string.h>
 #include "nxlcd.h"
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
@@ -86,6 +87,12 @@
 #define CARACTER_MIN 1
 #define LINHA1 0x80
 #define LINHA2 0xC0
+#define MMRINIT1 1
+#define MMREND1 5
+#define MMRINIT2 5
+#define MMREND2 9
+#define MMRINIT3 9
+#define MMREND3 25
 
 int cursor = LINHA2 +1;
 
@@ -345,23 +352,46 @@ void main(void) {
     config_ldc();
     
     int tecla = -1, teclaAnterior = -1, camada = 0;
-    int senha[4];
-    int ctrl;
+    int senha[4]; 
+    char nomeTranca[CARACTER_MAX],opc;
+    int ctrl,i,j,n;
     int senhaAtual[4], senhaAdmin[4];
     
     if(verificaMemoria()){
-        for (int i = 0;i<4;i++){
+        EEPROM_Guardar(0,'S');
+        for (i=MMRINIT1;i<MMREND1;i++){
+            EEPROM_Guardar(i,0);
             senhaAtual[i] = 0;
+            EEPROM_Guardar(i+4,i+1);
             senhaAdmin[i] = i+1;
         }
+        strcpy(nomeTranca,"Tranca");
+        n = strlen(nomeTranca);
+        
+        j=0;
+        for(i=MMRINIT3;i<MMREND3;i++){
+            EEPROM_Guardar(i,nomeTranca[j]);
+            j++;
+        }
+        EEPROM_Guardar(j,'/');
+        
     }else{
-        for (int i = 1;i<5;i++){
+        for (i=1;i<5;i++){
             senhaAtual[i] = atoi(EEPROM_Ler(i));
         }
-        for (int i = 5;i<9;i++){
+        for (i= 5;i<9;i++){
             senhaAdmin[i] = atoi(EEPROM_Ler(i));
         }
     }
+    
+    //Display inicial
+    i=MMRINIT3;
+    j=0;
+    while(EEPROM_Ler(i) != '/'){
+        nomeTranca[j]=EEPROM_Ler(i);
+        j++;
+        i++;
+    }    
     
     while(1){
         tecla = tecladoMatricial(tecla);
@@ -400,23 +430,45 @@ void main(void) {
             __delay_ms(100);
             PORTCbits.RC6 = 0;
             //Acende o LED
+            PORTDbits.RD0 = 1;                  
             //Verifica se a porta esta aberta
+            while(PORTEbits.RE3){
+            }
             //Apaga o LED
+            PORTDbits.RD0 = 0;
             //Fecha a tranca
+            PORTCbits.RC6 = 1;
+            __delay_ms(100);
+            PORTCbits.RC6 = 0;
         }
         if(ctrl == 2){
             //Atualiza Display
             //Le teclado
             //Opção A
-                //Altera senha
-                //Carrega na memória
+            if(opc == 'A'){
+                //Altera memoria
+                EEPROM_Guardar(0,'S');
+                //Carrega na memória a senha da tranca nova
+                for(int i=1;i<5;i++){
+                    EEPROM_Guardar(i,senhaAtual[i-1]);
+                }
+            }
             //Opção B
-                //Altera senha admin
-                //Carrega na memória
+                //Altera memoria
+                EEPROM_Guardar(0,'S');
+                //Carrega na memória a senha de admin nova
+                for(int i=5;i<9;i++){
+                    EEPROM_Guardar(i,senhaAtual[i-5]);
+                }
             //Opção C
-                //Altera nome da tranca
-                //Carrega na memória
+                //Altera memoria
+                EEPROM_Guardar(0,'S');
+                //Carrega na memória a senha de admin nova
+                for(int i=9;i<(i+CARACTER_MAX);i++){
+                    EEPROM_Guardar(i,nomeTranca[i-9]);
+                }
             //Opção D
+                //Atualiza display
                 //Sai da opcao
         }
     }
