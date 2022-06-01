@@ -163,17 +163,17 @@
 ]
 [u S120 . 1 `S99 1 . 1 0 `S108 1 . 1 0 `S117 1 . 1 0 ]
 [v _PORTDbits PORTDbits `VES120  1 e 1 @3971 ]
-[s S803 . 1 `uc 1 LATE0 1 0 :1:0 
+[s S800 . 1 `uc 1 LATE0 1 0 :1:0 
 `uc 1 LATE1 1 0 :1:1 
 `uc 1 LATE2 1 0 :1:2 
 ]
 "3392
-[s S807 . 1 `uc 1 LE0 1 0 :1:0 
+[s S804 . 1 `uc 1 LE0 1 0 :1:0 
 `uc 1 LE1 1 0 :1:1 
 `uc 1 LE2 1 0 :1:2 
 ]
-[u S811 . 1 `S803 1 . 1 0 `S807 1 . 1 0 ]
-[v _LATEbits LATEbits `VES811  1 e 1 @3981 ]
+[u S808 . 1 `S800 1 . 1 0 `S804 1 . 1 0 ]
+[v _LATEbits LATEbits `VES808  1 e 1 @3981 ]
 [s S148 . 1 `uc 1 TRISB0 1 0 :1:0 
 `uc 1 TRISB1 1 0 :1:1 
 `uc 1 TRISB2 1 0 :1:2 
@@ -200,17 +200,17 @@
 "4033
 [u S211 . 1 `S193 1 . 1 0 `S99 1 . 1 0 ]
 [v _TRISDbits TRISDbits `VES211  1 e 1 @3989 ]
-[s S783 . 1 `uc 1 TRISE0 1 0 :1:0 
+[s S780 . 1 `uc 1 TRISE0 1 0 :1:0 
 `uc 1 TRISE1 1 0 :1:1 
 `uc 1 TRISE2 1 0 :1:2 
 ]
 "4245
-[s S787 . 1 `uc 1 RE0 1 0 :1:0 
+[s S784 . 1 `uc 1 RE0 1 0 :1:0 
 `uc 1 RE1 1 0 :1:1 
 `uc 1 RE2 1 0 :1:2 
 ]
-[u S791 . 1 `S783 1 . 1 0 `S787 1 . 1 0 ]
-[v _TRISEbits TRISEbits `VES791  1 e 1 @3990 ]
+[u S788 . 1 `S780 1 . 1 0 `S784 1 . 1 0 ]
+[v _TRISEbits TRISEbits `VES788  1 e 1 @3990 ]
 [s S497 . 1 `uc 1 CCP2IF 1 0 :1:0 
 `uc 1 TMR3IF 1 0 :1:1 
 `uc 1 HLVDIF 1 0 :1:2 
@@ -375,28 +375,25 @@
 "290
 [v _main main `(v  1 e 1 0 ]
 {
-"343
-[v main@i_770 i `i  1 a 2 69 ]
-"337
-[v main@i_769 i `i  1 a 2 67 ]
-"330
-[v main@i_766 i `i  1 a 2 61 ]
-"321
-[v main@i_765 i `i  1 a 2 65 ]
-"318
-[v main@i_763 i `i  1 a 2 63 ]
+"335
+[v main@i_767 i `i  1 a 2 69 ]
+"329
+[v main@i_766 i `i  1 a 2 67 ]
+"322
+[v main@i_763 i `i  1 a 2 61 ]
 "313
+[v main@i_762 i `i  1 a 2 65 ]
+"310
+[v main@i_760 i `i  1 a 2 63 ]
+"305
 [v main@i i `i  1 a 2 71 ]
-"309
+"301
 [v main@senhaAdmin senhaAdmin `[4]i  1 a 8 49 ]
 [v main@senhaAtual senhaAtual `[4]i  1 a 8 41 ]
-"307
 [v main@senha senha `[4]i  1 a 8 33 ]
-"308
 [v main@ctrl ctrl `i  1 a 2 59 ]
-"307
 [v main@tecla tecla `i  1 a 2 57 ]
-"377
+"369
 } 0
 "283
 [v _verificaMemoria verificaMemoria `(i  1 e 2 0 ]

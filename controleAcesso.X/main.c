@@ -298,15 +298,7 @@ void main(void) {
     config_teclado();
     config_ldc();
     
-    WriteCmdXLCD(0x80);
-    putsXLCD("Fechadura");
-    WriteCmdXLCD(0xC0);
-    putsXLCD(":");
-    WriteCmdXLCD(0xC1);
-        
-    int tecla, teclaAnterior, senha[4];
-    int ctrl;
-    int senhaAtual[4], senhaAdmin[4];
+    int tecla, senha[4], ctrl, senhaAtual[4], senhaAdmin[4];
     
     //Verificar memoria, inicializar senhas
     if(verificaMemoria()){

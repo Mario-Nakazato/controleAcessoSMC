@@ -1506,38 +1506,18 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;main.c: 299:     config_ldc();
 [e ( _config_ldc ..  ]
 "301
-[; ;main.c: 301:     WriteCmdXLCD(0x80);
-[e ( _WriteCmdXLCD (1 -> -> 128 `i `uc ]
-"302
-[; ;main.c: 302:     putsXLCD("Fechadura");
-[e ( _putsXLCD (1 :s 3C ]
-"303
-[; ;main.c: 303:     WriteCmdXLCD(0xC0);
-[e ( _WriteCmdXLCD (1 -> -> 192 `i `uc ]
-"304
-[; ;main.c: 304:     putsXLCD(":");
-[e ( _putsXLCD (1 :s 4C ]
-"305
-[; ;main.c: 305:     WriteCmdXLCD(0xC1);
-[e ( _WriteCmdXLCD (1 -> -> 193 `i `uc ]
-"307
-[; ;main.c: 307:     int tecla, teclaAnterior, senha[4];
+[; ;main.c: 301:     int tecla, senha[4], ctrl, senhaAtual[4], senhaAdmin[4];
 [v _tecla `i ~T0 @X0 1 a ]
-[v _teclaAnterior `i ~T0 @X0 1 a ]
 [v _senha `i ~T0 @X0 -> 4 `i a ]
-"308
-[; ;main.c: 308:     int ctrl;
 [v _ctrl `i ~T0 @X0 1 a ]
-"309
-[; ;main.c: 309:     int senhaAtual[4], senhaAdmin[4];
 [v _senhaAtual `i ~T0 @X0 -> 4 `i a ]
 [v _senhaAdmin `i ~T0 @X0 -> 4 `i a ]
-"312
-[; ;main.c: 312:     if(verificaMemoria()){
+"304
+[; ;main.c: 304:     if(verificaMemoria()){
 [e $ ! != ( _verificaMemoria ..  -> 0 `i 414  ]
 {
-"313
-[; ;main.c: 313:         for (int i = 0;i<4;i++){
+"305
+[; ;main.c: 305:         for (int i = 0;i<4;i++){
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
@@ -1545,27 +1525,27 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 416  ]
 [e :U 415 ]
 {
-"314
-[; ;main.c: 314:             senhaAtual[i] = 0;
+"306
+[; ;main.c: 306:             senhaAtual[i] = 0;
 [e = *U + &U _senhaAtual * -> -> _i `ui `ux -> -> # *U &U _senhaAtual `ui `ux -> 0 `i ]
-"315
-[; ;main.c: 315:             senhaAdmin[i] = i+1;
+"307
+[; ;main.c: 307:             senhaAdmin[i] = i+1;
 [e = *U + &U _senhaAdmin * -> -> _i `ui `ux -> -> # *U &U _senhaAdmin `ui `ux + _i -> 1 `i ]
-"316
-[; ;main.c: 316:         }
+"308
+[; ;main.c: 308:         }
 }
 [e ++ _i -> 1 `i ]
 [e $ < _i -> 4 `i 415  ]
 [e :U 416 ]
 }
-"317
-[; ;main.c: 317:     }else{
+"309
+[; ;main.c: 309:     }else{
 }
 [e $U 418  ]
 [e :U 414 ]
 {
-"318
-[; ;main.c: 318:         for (int i = 1;i<5;i++){
+"310
+[; ;main.c: 310:         for (int i = 1;i<5;i++){
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 1 `i ]
@@ -1573,18 +1553,18 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 420  ]
 [e :U 419 ]
 {
-"319
-[; ;main.c: 319:             senhaAtual[i] = atoi(EEPROM_Ler(i));
+"311
+[; ;main.c: 311:             senhaAtual[i] = atoi(EEPROM_Ler(i));
 [e = *U + &U _senhaAtual * -> -> _i `ui `ux -> -> # *U &U _senhaAtual `ui `ux ( _atoi (1 -> ( _EEPROM_Ler (1 _i `*Cuc ]
-"320
-[; ;main.c: 320:         }
+"312
+[; ;main.c: 312:         }
 }
 [e ++ _i -> 1 `i ]
 [e $ < _i -> 5 `i 419  ]
 [e :U 420 ]
 }
-"321
-[; ;main.c: 321:         for (int i = 5;i<9;i++){
+"313
+[; ;main.c: 313:         for (int i = 5;i<9;i++){
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 5 `i ]
@@ -1592,29 +1572,29 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 423  ]
 [e :U 422 ]
 {
-"322
-[; ;main.c: 322:             senhaAdmin[i] = atoi(EEPROM_Ler(i));
+"314
+[; ;main.c: 314:             senhaAdmin[i] = atoi(EEPROM_Ler(i));
 [e = *U + &U _senhaAdmin * -> -> _i `ui `ux -> -> # *U &U _senhaAdmin `ui `ux ( _atoi (1 -> ( _EEPROM_Ler (1 _i `*Cuc ]
-"323
-[; ;main.c: 323:         }
+"315
+[; ;main.c: 315:         }
 }
 [e ++ _i -> 1 `i ]
 [e $ < _i -> 9 `i 422  ]
 [e :U 423 ]
 }
-"324
-[; ;main.c: 324:     }
+"316
+[; ;main.c: 316:     }
 }
 [e :U 418 ]
-"326
-[; ;main.c: 326:     while(1){
+"318
+[; ;main.c: 318:     while(1){
 [e :U 426 ]
 {
-"328
-[; ;main.c: 328:         ctrl = 1;
+"320
+[; ;main.c: 320:         ctrl = 1;
 [e = _ctrl -> 1 `i ]
-"330
-[; ;main.c: 330:         for(int i =0; i<4;i++){
+"322
+[; ;main.c: 322:         for(int i =0; i<4;i++){
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
@@ -1622,27 +1602,27 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 429  ]
 [e :U 428 ]
 {
-"331
-[; ;main.c: 331:             tecla = tecladoMatricial();
+"323
+[; ;main.c: 323:             tecla = tecladoMatricial();
 [e = _tecla ( _tecladoMatricial ..  ]
-"332
-[; ;main.c: 332:             lcd(tecla);
+"324
+[; ;main.c: 324:             lcd(tecla);
 [e ( _lcd (1 _tecla ]
-"333
-[; ;main.c: 333:             senha[i]=tecla;
+"325
+[; ;main.c: 325:             senha[i]=tecla;
 [e = *U + &U _senha * -> -> _i `ui `ux -> -> # *U &U _senha `ui `ux _tecla ]
-"334
-[; ;main.c: 334:         }
+"326
+[; ;main.c: 326:         }
 }
 [e ++ _i -> 1 `i ]
 [e $ < _i -> 4 `i 428  ]
 [e :U 429 ]
 }
-"336
-[; ;main.c: 336:         ctrl = 1;
+"328
+[; ;main.c: 328:         ctrl = 1;
 [e = _ctrl -> 1 `i ]
-"337
-[; ;main.c: 337:         for(int i=0;i<4;i++){
+"329
+[; ;main.c: 329:         for(int i=0;i<4;i++){
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
@@ -1650,26 +1630,26 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 432  ]
 [e :U 431 ]
 {
-"338
-[; ;main.c: 338:             if(senha[i] != senhaAtual[i]){
+"330
+[; ;main.c: 330:             if(senha[i] != senhaAtual[i]){
 [e $ ! != *U + &U _senha * -> -> _i `ui `ux -> -> # *U &U _senha `ui `ux *U + &U _senhaAtual * -> -> _i `ui `ux -> -> # *U &U _senhaAtual `ui `ux 434  ]
 {
-"339
-[; ;main.c: 339:                 ctrl = 2;
+"331
+[; ;main.c: 331:                 ctrl = 2;
 [e = _ctrl -> 2 `i ]
-"340
-[; ;main.c: 340:             }
+"332
+[; ;main.c: 332:             }
 }
 [e :U 434 ]
-"341
-[; ;main.c: 341:         }
+"333
+[; ;main.c: 333:         }
 }
 [e ++ _i -> 1 `i ]
 [e $ < _i -> 4 `i 431  ]
 [e :U 432 ]
 }
-"343
-[; ;main.c: 343:         for(int i=0;i<4;i++){
+"335
+[; ;main.c: 335:         for(int i=0;i<4;i++){
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
@@ -1677,63 +1657,61 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e $U 436  ]
 [e :U 435 ]
 {
-"344
-[; ;main.c: 344:             if(senha[i] != senhaAdmin[i]){
+"336
+[; ;main.c: 336:             if(senha[i] != senhaAdmin[i]){
 [e $ ! != *U + &U _senha * -> -> _i `ui `ux -> -> # *U &U _senha `ui `ux *U + &U _senhaAdmin * -> -> _i `ui `ux -> -> # *U &U _senhaAdmin `ui `ux 438  ]
 {
-"345
-[; ;main.c: 345:                 ctrl = 0;
+"337
+[; ;main.c: 337:                 ctrl = 0;
 [e = _ctrl -> 0 `i ]
-"346
-[; ;main.c: 346:             }
+"338
+[; ;main.c: 338:             }
 }
 [e :U 438 ]
-"347
-[; ;main.c: 347:         }
+"339
+[; ;main.c: 339:         }
 }
 [e ++ _i -> 1 `i ]
 [e $ < _i -> 4 `i 435  ]
 [e :U 436 ]
 }
-"349
-[; ;main.c: 349:         if(ctrl == 1){
+"341
+[; ;main.c: 341:         if(ctrl == 1){
 [e $ ! == _ctrl -> 1 `i 439  ]
 {
-"352
-[; ;main.c: 352:             PORTCbits.RC6 = 1;
+"344
+[; ;main.c: 344:             PORTCbits.RC6 = 1;
 [e = . . _PORTCbits 0 6 -> -> 1 `i `uc ]
-"353
-[; ;main.c: 353:             _delay((unsigned long)((100)*(20000000/4000.0)));
+"345
+[; ;main.c: 345:             _delay((unsigned long)((100)*(20000000/4000.0)));
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 20000000 `l `d .4000.0 `ul ]
-"354
-[; ;main.c: 354:             PORTCbits.RC6 = 0;
+"346
+[; ;main.c: 346:             PORTCbits.RC6 = 0;
 [e = . . _PORTCbits 0 6 -> -> 0 `i `uc ]
-"359
-[; ;main.c: 359:         }
+"351
+[; ;main.c: 351:         }
 }
 [e :U 439 ]
-"360
-[; ;main.c: 360:         if(ctrl == 2){
+"352
+[; ;main.c: 352:         if(ctrl == 2){
 [e $ ! == _ctrl -> 2 `i 440  ]
 {
-"374
-[; ;main.c: 374:         }
+"366
+[; ;main.c: 366:         }
 }
 [e :U 440 ]
-"375
-[; ;main.c: 375:     }
+"367
+[; ;main.c: 367:     }
 }
 [e :U 425 ]
 [e $U 426  ]
 [e :U 427 ]
-"376
-[; ;main.c: 376:     return;
+"368
+[; ;main.c: 368:     return;
 [e $UE 413  ]
-"377
-[; ;main.c: 377: }
+"369
+[; ;main.c: 369: }
 [e :UE 413 ]
 }
 [a 2C 70 101 99 104 97 100 117 114 97 0 ]
-[a 3C 70 101 99 104 97 100 117 114 97 0 ]
 [a 1C 58 0 ]
-[a 4C 58 0 ]
