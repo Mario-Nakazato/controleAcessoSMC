@@ -207,7 +207,76 @@ Version 4.0 HI-TECH Software Intermediate Code
 "7588
 [; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 7588: extern volatile RCONbits_t RCONbits __attribute__((address(0xFD0)));
 [v _RCONbits `VS321 ~T0 @X0 0 e@4048 ]
+"4929
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4929: extern volatile unsigned char EEADR __attribute__((address(0xFA9)));
+[v _EEADR `Vuc ~T0 @X0 0 e@4009 ]
+"4922
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4922: extern volatile unsigned char EEDATA __attribute__((address(0xFA8)));
+[v _EEDATA `Vuc ~T0 @X0 0 e@4008 ]
+"4855
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4855:     struct {
+[s S193 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S193 . RD WR WREN WRERR FREE . CFGS EEPGD ]
+"4865
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4865:     struct {
+[s S194 :6 `uc 1 :1 `uc 1 ]
+[n S194 . . EEFS ]
+"4854
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4854: typedef union {
+[u S192 `S193 1 `S194 1 ]
+[n S192 . . . ]
+"4870
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4870: extern volatile EECON1bits_t EECON1bits __attribute__((address(0xFA6)));
+[v _EECON1bits `VS192 ~T0 @X0 0 e@4006 ]
+"4915
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4915: extern volatile unsigned char EECON2 __attribute__((address(0xFA7)));
+[v _EECON2 `Vuc ~T0 @X0 0 e@4007 ]
+"4713
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4713:     struct {
+[s S187 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S187 . CCP2IF TMR3IF HLVDIF BCLIF EEIF USBIF CMIF OSCFIF ]
+"4723
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4723:     struct {
+[s S188 :2 `uc 1 :1 `uc 1 ]
+[n S188 . . LVDIF ]
+"4712
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4712: typedef union {
+[u S186 `S187 1 `S188 1 ]
+[n S186 . . . ]
+"4728
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 4728: extern volatile PIR2bits_t PIR2bits __attribute__((address(0xFA1)));
+[v _PIR2bits `VS186 ~T0 @X0 0 e@4001 ]
 [p mainexit ]
+"23 C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\c99\stdlib.h
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\c99\stdlib.h: 23: int atoi (const char *);
+[v _atoi `(i ~T0 @X0 0 ef1`*Cuc ]
+"2569 C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2569:     struct {
+[s S111 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S111 . RC0 RC1 RC2 . RC4 RC5 RC6 RC7 ]
+"2579
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2579:     struct {
+[s S112 :1 `uc 1 :1 `uc 1 :1 `uc 1 :3 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S112 . T1OSO T1OSI CCP1 . TX RX ]
+"2587
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2587:     struct {
+[s S113 :1 `uc 1 :1 `uc 1 :1 `uc 1 :3 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S113 . T13CKI . P1A . CK DT ]
+"2595
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2595:     struct {
+[s S114 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S114 . . CCP2 PA1 ]
+"2600
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2600:     struct {
+[s S115 :1 `uc 1 :1 `uc 1 ]
+[n S115 . . PA2 ]
+"2568
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2568: typedef union {
+[u S110 `S111 1 `S112 1 `S113 1 `S114 1 `S115 1 ]
+[n S110 . . . . . . ]
+"2605
+[; ;C:\Program Files (x86)\Microchip\xc8\v2.05\pic\include\pic18f4550.h: 2605: extern volatile PORTCbits_t PORTCbits __attribute__((address(0xF82)));
+[v _PORTCbits `VS110 ~T0 @X0 0 e@3970 ]
 "13 main.c
 [p x PLLDIV = 1 ]
 "14
@@ -1304,54 +1373,367 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;main.c: 257: }
 [e :UE 404 ]
 }
-[v $root$_main `(v ~T0 @X0 0 e ]
 "259
-[; ;main.c: 259: void main(void) {
+[; ;main.c: 259: void EEPROM_Guardar(int dir, char data){
+[v _EEPROM_Guardar `(v ~T0 @X0 1 ef2`i`uc ]
+{
+[e :U _EEPROM_Guardar ]
+[v _dir `i ~T0 @X0 1 r1 ]
+[v _data `uc ~T0 @X0 1 r2 ]
+[f ]
+"260
+[; ;main.c: 260:     EEADR = dir;
+[e = _EEADR -> _dir `uc ]
+"261
+[; ;main.c: 261:     EEDATA = data;
+[e = _EEDATA -> _data `uc ]
+"262
+[; ;main.c: 262:     EECON1bits.EEPGD = 0;
+[e = . . _EECON1bits 0 7 -> -> 0 `i `uc ]
+"263
+[; ;main.c: 263:     EECON1bits.CFGS = 0;
+[e = . . _EECON1bits 0 6 -> -> 0 `i `uc ]
+"264
+[; ;main.c: 264:     EECON1bits.WREN = 1;
+[e = . . _EECON1bits 0 2 -> -> 1 `i `uc ]
+"265
+[; ;main.c: 265:     INTCONbits.GIE = 0;
+[e = . . _INTCONbits 1 7 -> -> 0 `i `uc ]
+"266
+[; ;main.c: 266:     EECON2 = 0x55;
+[e = _EECON2 -> -> 85 `i `uc ]
+"267
+[; ;main.c: 267:     EECON2 = 0x0AA;
+[e = _EECON2 -> -> 170 `i `uc ]
+"268
+[; ;main.c: 268:     EECON1bits.WR = 1;
+[e = . . _EECON1bits 0 1 -> -> 1 `i `uc ]
+"269
+[; ;main.c: 269:     INTCONbits.GIE = 1;
+[e = . . _INTCONbits 1 7 -> -> 1 `i `uc ]
+"270
+[; ;main.c: 270:     while(!PIR2bits.EEIF);
+[e $U 406  ]
+[e :U 407 ]
+[e :U 406 ]
+[e $ ! != -> . . _PIR2bits 0 4 `i -> 0 `i 407  ]
+[e :U 408 ]
+"271
+[; ;main.c: 271:     PIR2bits.EEIF = 0;
+[e = . . _PIR2bits 0 4 -> -> 0 `i `uc ]
+"272
+[; ;main.c: 272:     EECON1bits.WREN = 0;
+[e = . . _EECON1bits 0 2 -> -> 0 `i `uc ]
+"273
+[; ;main.c: 273: }
+[e :UE 405 ]
+}
+"275
+[; ;main.c: 275: unsigned char EEPROM_Ler(int dir){
+[v _EEPROM_Ler `(uc ~T0 @X0 1 ef1`i ]
+{
+[e :U _EEPROM_Ler ]
+[v _dir `i ~T0 @X0 1 r1 ]
+[f ]
+"276
+[; ;main.c: 276:     EEADR = dir;
+[e = _EEADR -> _dir `uc ]
+"277
+[; ;main.c: 277:     EECON1bits.EEPGD = 0;
+[e = . . _EECON1bits 0 7 -> -> 0 `i `uc ]
+"278
+[; ;main.c: 278:     EECON1bits.CFGS = 0;
+[e = . . _EECON1bits 0 6 -> -> 0 `i `uc ]
+"279
+[; ;main.c: 279:     EECON1bits.RD = 1;
+[e = . . _EECON1bits 0 0 -> -> 1 `i `uc ]
+"280
+[; ;main.c: 280:     return EEDATA;
+[e ) _EEDATA ]
+[e $UE 409  ]
+"281
+[; ;main.c: 281: }
+[e :UE 409 ]
+}
+"283
+[; ;main.c: 283: int verificaMemoria(){
+[v _verificaMemoria `(i ~T0 @X0 1 ef ]
+{
+[e :U _verificaMemoria ]
+[f ]
+"284
+[; ;main.c: 284:     if(EEPROM_Ler(0)=='S'){
+[e $ ! == -> ( _EEPROM_Ler (1 -> 0 `i `ui -> 83 `ui 411  ]
+{
+"285
+[; ;main.c: 285:         return 0;
+[e ) -> 0 `i ]
+[e $UE 410  ]
+"286
+[; ;main.c: 286:     }
+}
+[e $U 412  ]
+"287
+[; ;main.c: 287:     else return 1;
+[e :U 411 ]
+[e ) -> 1 `i ]
+[e $UE 410  ]
+[e :U 412 ]
+"288
+[; ;main.c: 288: }
+[e :UE 410 ]
+}
+[v $root$_main `(v ~T0 @X0 0 e ]
+"290
+[; ;main.c: 290: void main(void) {
 [v _main `(v ~T0 @X0 1 ef ]
 {
 [e :U _main ]
 [f ]
-"261
-[; ;main.c: 261:     config_interrupcao();
+"292
+[; ;main.c: 292:     config_interrupcao();
 [e ( _config_interrupcao ..  ]
-"265
-[; ;main.c: 265:     config_timer0();
+"296
+[; ;main.c: 296:     config_timer0();
 [e ( _config_timer0 ..  ]
-"266
-[; ;main.c: 266:     config_led();
+"297
+[; ;main.c: 297:     config_led();
 [e ( _config_led ..  ]
-"267
-[; ;main.c: 267:     config_teclado();
+"298
+[; ;main.c: 298:     config_teclado();
 [e ( _config_teclado ..  ]
-"268
-[; ;main.c: 268:     config_ldc();
+"299
+[; ;main.c: 299:     config_ldc();
 [e ( _config_ldc ..  ]
-"270
-[; ;main.c: 270:     int tecla, teclaAnterior;
+"301
+[; ;main.c: 301:     WriteCmdXLCD(0x80);
+[e ( _WriteCmdXLCD (1 -> -> 128 `i `uc ]
+"302
+[; ;main.c: 302:     putsXLCD("Fechadura");
+[e ( _putsXLCD (1 :s 3C ]
+"303
+[; ;main.c: 303:     WriteCmdXLCD(0xC0);
+[e ( _WriteCmdXLCD (1 -> -> 192 `i `uc ]
+"304
+[; ;main.c: 304:     putsXLCD(":");
+[e ( _putsXLCD (1 :s 4C ]
+"305
+[; ;main.c: 305:     WriteCmdXLCD(0xC1);
+[e ( _WriteCmdXLCD (1 -> -> 193 `i `uc ]
+"307
+[; ;main.c: 307:     int tecla, teclaAnterior, senha[4];
 [v _tecla `i ~T0 @X0 1 a ]
 [v _teclaAnterior `i ~T0 @X0 1 a ]
-"272
-[; ;main.c: 272:     while(1){
-[e :U 407 ]
+[v _senha `i ~T0 @X0 -> 4 `i a ]
+"308
+[; ;main.c: 308:     int ctrl;
+[v _ctrl `i ~T0 @X0 1 a ]
+"309
+[; ;main.c: 309:     int senhaAtual[4], senhaAdmin[4];
+[v _senhaAtual `i ~T0 @X0 -> 4 `i a ]
+[v _senhaAdmin `i ~T0 @X0 -> 4 `i a ]
+"312
+[; ;main.c: 312:     if(verificaMemoria()){
+[e $ ! != ( _verificaMemoria ..  -> 0 `i 414  ]
 {
-"273
-[; ;main.c: 273:         tecla = tecladoMatricial();
-[e = _tecla ( _tecladoMatricial ..  ]
-"274
-[; ;main.c: 274:         lcd(tecla);
-[e ( _lcd (1 _tecla ]
-"276
-[; ;main.c: 276:     }
+"313
+[; ;main.c: 313:         for (int i = 0;i<4;i++){
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 4 `i 415  ]
+[e $U 416  ]
+[e :U 415 ]
+{
+"314
+[; ;main.c: 314:             senhaAtual[i] = 0;
+[e = *U + &U _senhaAtual * -> -> _i `ui `ux -> -> # *U &U _senhaAtual `ui `ux -> 0 `i ]
+"315
+[; ;main.c: 315:             senhaAdmin[i] = i+1;
+[e = *U + &U _senhaAdmin * -> -> _i `ui `ux -> -> # *U &U _senhaAdmin `ui `ux + _i -> 1 `i ]
+"316
+[; ;main.c: 316:         }
 }
-[e :U 406 ]
-[e $U 407  ]
-[e :U 408 ]
-"278
-[; ;main.c: 278:     return;
-[e $UE 405  ]
-"279
-[; ;main.c: 279: }
-[e :UE 405 ]
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 4 `i 415  ]
+[e :U 416 ]
+}
+"317
+[; ;main.c: 317:     }else{
+}
+[e $U 418  ]
+[e :U 414 ]
+{
+"318
+[; ;main.c: 318:         for (int i = 1;i<5;i++){
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 1 `i ]
+[e $ < _i -> 5 `i 419  ]
+[e $U 420  ]
+[e :U 419 ]
+{
+"319
+[; ;main.c: 319:             senhaAtual[i] = atoi(EEPROM_Ler(i));
+[e = *U + &U _senhaAtual * -> -> _i `ui `ux -> -> # *U &U _senhaAtual `ui `ux ( _atoi (1 -> ( _EEPROM_Ler (1 _i `*Cuc ]
+"320
+[; ;main.c: 320:         }
+}
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 5 `i 419  ]
+[e :U 420 ]
+}
+"321
+[; ;main.c: 321:         for (int i = 5;i<9;i++){
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 5 `i ]
+[e $ < _i -> 9 `i 422  ]
+[e $U 423  ]
+[e :U 422 ]
+{
+"322
+[; ;main.c: 322:             senhaAdmin[i] = atoi(EEPROM_Ler(i));
+[e = *U + &U _senhaAdmin * -> -> _i `ui `ux -> -> # *U &U _senhaAdmin `ui `ux ( _atoi (1 -> ( _EEPROM_Ler (1 _i `*Cuc ]
+"323
+[; ;main.c: 323:         }
+}
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 9 `i 422  ]
+[e :U 423 ]
+}
+"324
+[; ;main.c: 324:     }
+}
+[e :U 418 ]
+"326
+[; ;main.c: 326:     while(1){
+[e :U 426 ]
+{
+"328
+[; ;main.c: 328:         ctrl = 1;
+[e = _ctrl -> 1 `i ]
+"330
+[; ;main.c: 330:         for(int i =0; i<4;i++){
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 4 `i 428  ]
+[e $U 429  ]
+[e :U 428 ]
+{
+"331
+[; ;main.c: 331:             tecla = tecladoMatricial();
+[e = _tecla ( _tecladoMatricial ..  ]
+"332
+[; ;main.c: 332:             lcd(tecla);
+[e ( _lcd (1 _tecla ]
+"333
+[; ;main.c: 333:             senha[i]=tecla;
+[e = *U + &U _senha * -> -> _i `ui `ux -> -> # *U &U _senha `ui `ux _tecla ]
+"334
+[; ;main.c: 334:         }
+}
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 4 `i 428  ]
+[e :U 429 ]
+}
+"336
+[; ;main.c: 336:         ctrl = 1;
+[e = _ctrl -> 1 `i ]
+"337
+[; ;main.c: 337:         for(int i=0;i<4;i++){
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 4 `i 431  ]
+[e $U 432  ]
+[e :U 431 ]
+{
+"338
+[; ;main.c: 338:             if(senha[i] != senhaAtual[i]){
+[e $ ! != *U + &U _senha * -> -> _i `ui `ux -> -> # *U &U _senha `ui `ux *U + &U _senhaAtual * -> -> _i `ui `ux -> -> # *U &U _senhaAtual `ui `ux 434  ]
+{
+"339
+[; ;main.c: 339:                 ctrl = 2;
+[e = _ctrl -> 2 `i ]
+"340
+[; ;main.c: 340:             }
+}
+[e :U 434 ]
+"341
+[; ;main.c: 341:         }
+}
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 4 `i 431  ]
+[e :U 432 ]
+}
+"343
+[; ;main.c: 343:         for(int i=0;i<4;i++){
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 4 `i 435  ]
+[e $U 436  ]
+[e :U 435 ]
+{
+"344
+[; ;main.c: 344:             if(senha[i] != senhaAdmin[i]){
+[e $ ! != *U + &U _senha * -> -> _i `ui `ux -> -> # *U &U _senha `ui `ux *U + &U _senhaAdmin * -> -> _i `ui `ux -> -> # *U &U _senhaAdmin `ui `ux 438  ]
+{
+"345
+[; ;main.c: 345:                 ctrl = 0;
+[e = _ctrl -> 0 `i ]
+"346
+[; ;main.c: 346:             }
+}
+[e :U 438 ]
+"347
+[; ;main.c: 347:         }
+}
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 4 `i 435  ]
+[e :U 436 ]
+}
+"349
+[; ;main.c: 349:         if(ctrl == 1){
+[e $ ! == _ctrl -> 1 `i 439  ]
+{
+"352
+[; ;main.c: 352:             PORTCbits.RC6 = 1;
+[e = . . _PORTCbits 0 6 -> -> 1 `i `uc ]
+"353
+[; ;main.c: 353:             _delay((unsigned long)((100)*(20000000/4000.0)));
+[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 20000000 `l `d .4000.0 `ul ]
+"354
+[; ;main.c: 354:             PORTCbits.RC6 = 0;
+[e = . . _PORTCbits 0 6 -> -> 0 `i `uc ]
+"359
+[; ;main.c: 359:         }
+}
+[e :U 439 ]
+"360
+[; ;main.c: 360:         if(ctrl == 2){
+[e $ ! == _ctrl -> 2 `i 440  ]
+{
+"374
+[; ;main.c: 374:         }
+}
+[e :U 440 ]
+"375
+[; ;main.c: 375:     }
+}
+[e :U 425 ]
+[e $U 426  ]
+[e :U 427 ]
+"376
+[; ;main.c: 376:     return;
+[e $UE 413  ]
+"377
+[; ;main.c: 377: }
+[e :UE 413 ]
 }
 [a 2C 70 101 99 104 97 100 117 114 97 0 ]
+[a 3C 70 101 99 104 97 100 117 114 97 0 ]
 [a 1C 58 0 ]
+[a 4C 58 0 ]

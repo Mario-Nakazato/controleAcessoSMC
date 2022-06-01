@@ -5911,6 +5911,37 @@ void config_interrupcao() {
     INTCONbits.GIEL = 1;
 }
 
+void EEPROM_Guardar(int dir, char data){
+    EEADR = dir;
+    EEDATA = data;
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.WREN = 1;
+    INTCONbits.GIE = 0;
+    EECON2 = 0x55;
+    EECON2 = 0x0AA;
+    EECON1bits.WR = 1;
+    INTCONbits.GIE = 1;
+    while(!PIR2bits.EEIF);
+    PIR2bits.EEIF = 0;
+    EECON1bits.WREN = 0;
+}
+
+unsigned char EEPROM_Ler(int dir){
+    EEADR = dir;
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.RD = 1;
+    return EEDATA;
+}
+
+int verificaMemoria(){
+    if(EEPROM_Ler(0)=='S'){
+        return 0;
+    }
+    else return 1;
+}
+
 void main(void) {
 
     config_interrupcao();
@@ -5922,13 +5953,68 @@ void main(void) {
     config_teclado();
     config_ldc();
 
-    int tecla, teclaAnterior;
+    WriteCmdXLCD(0x80);
+    putsXLCD("Fechadura");
+    WriteCmdXLCD(0xC0);
+    putsXLCD(":");
+    WriteCmdXLCD(0xC1);
 
-    while(1){
-        tecla = tecladoMatricial();
-        lcd(tecla);
+    int tecla, teclaAnterior, senha[4];
+    int ctrl;
+    int senhaAtual[4], senhaAdmin[4];
 
+
+    if(verificaMemoria()){
+        for (int i = 0;i<4;i++){
+            senhaAtual[i] = 0;
+            senhaAdmin[i] = i+1;
+        }
+    }else{
+        for (int i = 1;i<5;i++){
+            senhaAtual[i] = atoi(EEPROM_Ler(i));
+        }
+        for (int i = 5;i<9;i++){
+            senhaAdmin[i] = atoi(EEPROM_Ler(i));
+        }
     }
 
+    while(1){
+
+        ctrl = 1;
+
+        for(int i =0; i<4;i++){
+            tecla = tecladoMatricial();
+            lcd(tecla);
+            senha[i]=tecla;
+        }
+
+        ctrl = 1;
+        for(int i=0;i<4;i++){
+            if(senha[i] != senhaAtual[i]){
+                ctrl = 2;
+            }
+        }
+
+        for(int i=0;i<4;i++){
+            if(senha[i] != senhaAdmin[i]){
+                ctrl = 0;
+            }
+        }
+
+        if(ctrl == 1){
+
+
+            PORTCbits.RC6 = 1;
+            _delay((unsigned long)((100)*(20000000/4000.0)));
+            PORTCbits.RC6 = 0;
+
+
+
+
+        }
+        if(ctrl == 2){
+# 374 "main.c"
+        }
+    }
     return;
 }
