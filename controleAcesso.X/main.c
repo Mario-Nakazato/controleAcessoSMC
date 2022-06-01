@@ -79,16 +79,16 @@
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
 #define LOADTMR0 100
+#define CARACTER_MAX 16
+#define CARACTER_MIN 1
+#define LINHA1 0x80
+#define LINHA2 0xC0
 
-int cursor = 0xC1;
+int cursor = LINHA2 +1;
 
-void lcdTxt(char *txt){
-    __delay_ms(4);
-    WriteCmdXLCD(0x80);
+void lcdTxt(int linha, char *txt){
+    WriteCmdXLCD(linha);
     putrsXLCD(txt);
-    WriteCmdXLCD(0xC0);
-    putsXLCD(":");
-    WriteCmdXLCD(0xC1);
 }
 
 void lcd(int tecla){
@@ -100,14 +100,16 @@ void lcd(int tecla){
     };
     
     if(tecla != -1){
-        if(teclado[tecla] == '*'){
+        if(teclado[tecla] == '*' && cursor > LINHA2 +CARACTER_MIN){
             cursor--;
-        }else if(teclado[tecla] == '#'){
+        }else if(teclado[tecla] == '#' && cursor < LINHA2 +CARACTER_MAX){
             cursor++;
-        }else{
-            WriteCmdXLCD(cursor);
-            putcXLCD(teclado[tecla]);
-            cursor++;
+        }else if(teclado[tecla] != '*' && teclado[tecla] != '#'){
+            if(cursor < LINHA2 +CARACTER_MAX){
+                WriteCmdXLCD(cursor);
+                putcXLCD(teclado[tecla]);
+                cursor++;
+            }
         }
         WriteCmdXLCD(cursor);
     }
@@ -130,6 +132,7 @@ void varreduraTeclado(){
         PORTBbits.RB0 = 1;
         PORTBbits.RB3 = 0;
     }
+    TMR0 = LOADTMR0;
     PORTDbits.RD0 = !PORTDbits.RD0;
 }
 
@@ -157,7 +160,9 @@ int tecladoMatricial(int tecla){
     }
     if(tecla != -1){
         T0CONbits.TMR0ON = 0;
-    }else{
+    }
+    if(tecla == -1 && !T0CONbits.TMR0ON){
+        TMR0 = LOADTMR0;
         T0CONbits.TMR0ON = 1;
     }
     return tecla;
@@ -186,7 +191,9 @@ void config_teclado(){
 void config_ldc(){
     OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
     WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
-    lcdTxt("Fechadura");
+    __delay_ms(8);
+    lcdTxt(LINHA1, "Fechadura");
+    lcdTxt(LINHA2, ":");
 }
 
 void config_led(){
@@ -195,15 +202,15 @@ void config_led(){
 }
 
 void __interrupt() interrupcao(void) {
-    if (INTCON3bits.INT1IF) {
+    /*if (INTCON3bits.INT1IF) {
         
         INTCON3bits.INT1IF = 0;
     } else if (INTCON3bits.INT2IF) {
         
         INTCON3bits.INT2IF = 0;
-    } else if (INTCONbits.TMR0IF) {
+    } else */if (INTCONbits.TMR0IF) {
         varreduraTeclado();
-        TMR0 = LOADTMR0;
+        //TMR0 = LOADTMR0;
         INTCONbits.TMR0IF = 0;
     }
 }
