@@ -83,8 +83,8 @@
 int cursor = 0xC1;
 
 void lcdTxt(char *txt){
-    WriteCmdXLCD(0x80);
     __delay_ms(4);
+    WriteCmdXLCD(0x80);
     putrsXLCD(txt);
     WriteCmdXLCD(0xC0);
     putsXLCD(":");
@@ -133,8 +133,7 @@ void varreduraTeclado(){
     PORTDbits.RD0 = !PORTDbits.RD0;
 }
 
-int tecladoMatricial(){
-    int tecla;
+int tecladoMatricial(int tecla){
     if(!PORTBbits.RB3){
         tecla = !PORTBbits.RB4 ? 0: 
                 !PORTBbits.RB5 ? 4: 
@@ -155,6 +154,11 @@ int tecladoMatricial(){
                 !PORTBbits.RB5 ? 7: 
                 !PORTBbits.RB6 ? 11: 
                 !PORTBbits.RB7 ? 15: -1;
+    }
+    if(tecla != -1){
+        T0CONbits.TMR0ON = 0;
+    }else{
+        T0CONbits.TMR0ON = 1;
     }
     return tecla;
 }
@@ -180,7 +184,6 @@ void config_teclado(){
 }
 
 void config_ldc(){
-    //Inicializa??o do LCD
     OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
     WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
     lcdTxt("Fechadura");
@@ -256,37 +259,6 @@ void config_interrupcao() {
     INTCONbits.GIEL = 1; // Habilita as interrupcoes de baixa prioridade
 }
 
-void EEPROM_Guardar(int dir, char data){
-    EEADR = dir;
-    EEDATA = data;
-    EECON1bits.EEPGD = 0; 
-    EECON1bits.CFGS = 0;
-    EECON1bits.WREN = 1;
-    INTCONbits.GIE = 0;
-    EECON2 = 0x55;
-    EECON2 = 0x0AA;
-    EECON1bits.WR = 1;
-    INTCONbits.GIE = 1;
-    while(!PIR2bits.EEIF);
-    PIR2bits.EEIF = 0;
-    EECON1bits.WREN = 0;
-}
-
-unsigned char EEPROM_Ler(int dir){
-    EEADR = dir;
-    EECON1bits.EEPGD = 0;
-    EECON1bits.CFGS = 0;
-    EECON1bits.RD = 1;
-    return EEDATA;
-}
-
-int verificaMemoria(){
-    if(EEPROM_Ler(0)=='S'){
-        return 0;
-    }
-    else return 1;
-}
-
 void main(void) {
     
     config_interrupcao();
@@ -298,72 +270,14 @@ void main(void) {
     config_teclado();
     config_ldc();
     
-    int tecla, senha[4], ctrl, senhaAtual[4], senhaAdmin[4];
-    
-    //Verificar memoria, inicializar senhas
-    if(verificaMemoria()){
-        for (int i = 0;i<4;i++){
-            senhaAtual[i] = 0;
-            senhaAdmin[i] = i+1;
-        }
-    }else{
-        for (int i = 1;i<5;i++){
-            senhaAtual[i] = atoi(EEPROM_Ler(i));
-        }
-        for (int i = 5;i<9;i++){
-            senhaAdmin[i] = atoi(EEPROM_Ler(i));
-        }
-    }
+    int tecla = -1, teclaAnterior = -1;
     
     while(1){
-        
-        ctrl = 1;
-        
-        for(int i =0; i<4;i++){
-            tecla = tecladoMatricial();
+        tecla = tecladoMatricial(tecla);
+        if(teclaAnterior == -1 && tecla != teclaAnterior){
             lcd(tecla);
-            senha[i]=tecla;    
         }
-        //Testa se é a senha da tranca
-        ctrl = 1;
-        for(int i=0;i<4;i++){
-            if(senha[i] != senhaAtual[i]){
-                ctrl = 2;
-            }
-        }
-        //Testa se é a senha do admin
-        for(int i=0;i<4;i++){
-            if(senha[i] != senhaAdmin[i]){
-                ctrl = 0;
-            }
-        }
-        
-        if(ctrl == 1){
-            //Atualiza Display
-            //Aciona relé
-            PORTCbits.RC6 = 1;
-            __delay_ms(100);
-            PORTCbits.RC6 = 0;
-            //Acende o LED
-            //Verifica se a porta esta aberta
-            //Apaga o LED
-            //Fecha a tranca
-        }
-        if(ctrl == 2){
-            //Atualiza Display
-            //Le teclado
-            //Opção A
-                //Altera senha
-                //Carrega na memória
-            //Opção B
-                //Altera senha admin
-                //Carrega na memória
-            //Opção C
-                //Altera nome da tranca
-                //Carrega na memória
-            //Opção D
-                //Sai da opcao
-        }
+        teclaAnterior = tecla;
     }
     return;
 }
