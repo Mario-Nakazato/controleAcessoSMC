@@ -77,6 +77,7 @@
 #include <xc.h>
 #include <string.h>
 #include "nxlcd.h"
+#include <stdio.h>
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
 #define CAMADA_TECLADO 3
@@ -340,6 +341,15 @@ int verificaMemoria(){
     }
     else return 1;
 }
+void putch(unsigned char data) {
+    while( ! PIR1bits.TXIF)          // wait until the transmitter is ready
+        continue;
+    TXREG = data;                     // send one character
+}
+void init_uart(void) {
+    TXSTAbits.TXEN = 1;               // enable transmitter
+    RCSTAbits.SPEN = 1;               // enable serial port
+}
 
 
 void main(void) {
@@ -353,15 +363,134 @@ void main(void) {
     config_led();
     config_teclado();
     config_ldc();
+
+        
+    int tecla = -1, teclaAnterior = -1, camada = 0;
+    int senha[4]; 
+    char nomeTranca[CARACTER_MAX],opc;
+    int ctrl,i,j,n;
+    int senhaAtual[4], senhaAdmin[4];
     
-    int tecla = -1, teclaAnterior = -1, camada = 0;  
+    init_uart();
     
+    if(verificaMemoria()){
+        printf("Escreve na memory");
+        EEPROM_Guardar(0,'S');
+        for (i=MMRINIT1;i<MMREND1;i++){
+            EEPROM_Guardar(i,1);
+            senhaAtual[i] = 1;
+            EEPROM_Guardar(i+4,i);
+            senhaAdmin[i] = i;
+        }
+        strcpy(nomeTranca,"Trunca");
+        n = strlen(nomeTranca);
+        
+        j=0;
+        for(i=MMRINIT3;i<MMREND3-1;i++){
+            EEPROM_Guardar(i,nomeTranca[j]);
+            j++;
+        }
+        EEPROM_Guardar(j,'/');
+        
+    }else{
+        for (i=MMRINIT1;i<MMREND1;i++){
+            senhaAtual[i] = atoi(EEPROM_Ler(i));
+            printf("%d",senhaAtual[i]);
+        }
+        printf("\n");
+        for (i=MMRINIT2;i<MMREND2;i++){
+            senhaAdmin[i] = atoi(EEPROM_Ler(i));
+            printf("%d",senhaAdmin[i]);
+        }
+    }
+    
+    //Display inicial
+    i=MMRINIT3;
+    j=0;
+    while(EEPROM_Ler(i) != '/'){
+        nomeTranca[j]=EEPROM_Ler(i);
+        j++;
+        i++;
+    }
+    
+    lcdTxt(LINHA1,nomeTranca);
+    lcdTxt(LINHA2,":");
+
     while(1){
         tecla = tecladoMatricial(tecla);
         if(teclaAnterior == -1 && tecla != teclaAnterior){
             lcd(tecla, camada);
         }
         teclaAnterior = tecla;
+
+        
+        //Testa se a é a senha da tranca
+        ctrl = 1;
+        for(int i=0;i<4;i++){
+            if(senha[i] != senhaAtual[i]){
+                ctrl = 2;
+            }
+        }
+        //Testa se é a senha do admin
+        for(int i=0;i<4;i++){
+            if(senha[i] != senhaAdmin[i]){
+                ctrl = 0;
+            }
+        }
+        
+        if(ctrl == 1){
+            //Atualiza Display
+            //Aciona relé
+            PORTCbits.RC6 = 1;
+            __delay_ms(100);
+            PORTCbits.RC6 = 0;
+            //Acende o LED
+            PORTDbits.RD0 = 1;                  
+            //Verifica se a porta esta aberta
+            while(PORTEbits.RE3){
+            }
+            //Apaga o LED
+            PORTDbits.RD0 = 0;
+            //Fecha a tranca
+            PORTCbits.RC6 = 1;
+            __delay_ms(100);
+            PORTCbits.RC6 = 0;
+        }
+        if(ctrl == 2){
+            //Atualiza Display
+            //Le teclado
+            //Opção A
+            if(opc == 'A'){
+                //Altera memoria
+                for(i=MMRINIT1;i<MMREND1;i++){
+                    j=0;
+                    EEPROM_Guardar(i,senhaAtual[j]);
+                    j++;
+                }
+            }
+            //Opção B
+            if(opc == 'B'){
+                //Carrega na memória a senha de admin nova
+                for(i=MMRINIT2;i<MMREND2;i++){
+                    j=0;
+                    EEPROM_Guardar(i,senhaAtual[i-5]);
+                    j++;
+                }
+            }
+            //Opção C
+            if(opc == 'C'){
+                //Carrega na memória a senha de admin nova
+                for(i=MMRINIT3;i<MMREND3;i++){
+                    j=0;
+                    EEPROM_Guardar(i,nomeTranca[i-9]);
+                    j++;
+                }
+            }
+            //Opção D
+                //Atualiza display
+                //Sai da opcao
+        }
+
     }
     return;
 }
