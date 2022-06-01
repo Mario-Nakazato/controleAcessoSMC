@@ -98,6 +98,8 @@ int cursor = LINHA2 +1;
 
 void lcdTxt(int linha, char *txt){
     WriteCmdXLCD(linha);
+    putrsXLCD("                ");
+    WriteCmdXLCD(linha);
     putrsXLCD(txt);
 }
 
@@ -132,6 +134,7 @@ void lcd(int tecla, int camada){
             if(cursor < LINHA2 +CARACTER_MAX){
                 WriteCmdXLCD(cursor);
                 putcXLCD(teclado[camada][tecla]);
+                __delay_ms(512);
                 //if(T1CONbits.TMR1ON == 0){
                     cursor++;
                 //}
@@ -139,9 +142,9 @@ void lcd(int tecla, int camada){
         }
         WriteCmdXLCD(cursor);
     }
-    if(!BusyXLCD()){
+    /*if(!BusyXLCD()){
         __delay_ms(8);
-    }
+    }*/
 }
 
 void varreduraTeclado(){
@@ -218,7 +221,7 @@ void config_teclado(){
 void config_ldc(){
     OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
     WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
-    __delay_ms(8);
+    __delay_ms(512);
     lcdTxt(LINHA1, "Fechadura");
     lcdTxt(LINHA2, ":");
 }
@@ -351,126 +354,14 @@ void main(void) {
     config_teclado();
     config_ldc();
     
-    int tecla = -1, teclaAnterior = -1, camada = 0;
-    int senha[4]; 
-    char nomeTranca[CARACTER_MAX],opc;
-    int ctrl,i,j,n;
-    int senhaAtual[4], senhaAdmin[4];
-    
-    if(verificaMemoria()){
-        EEPROM_Guardar(0,'S');
-        for (i=MMRINIT1;i<MMREND1;i++){
-            EEPROM_Guardar(i,0);
-            senhaAtual[i] = 0;
-            EEPROM_Guardar(i+4,i+1);
-            senhaAdmin[i] = i+1;
-        }
-        strcpy(nomeTranca,"Tranca");
-        n = strlen(nomeTranca);
-        
-        j=0;
-        for(i=MMRINIT3;i<MMREND3;i++){
-            EEPROM_Guardar(i,nomeTranca[j]);
-            j++;
-        }
-        EEPROM_Guardar(j,'/');
-        
-    }else{
-        for (i=1;i<5;i++){
-            senhaAtual[i] = atoi(EEPROM_Ler(i));
-        }
-        for (i= 5;i<9;i++){
-            senhaAdmin[i] = atoi(EEPROM_Ler(i));
-        }
-    }
-    
-    //Display inicial
-    i=MMRINIT3;
-    j=0;
-    while(EEPROM_Ler(i) != '/'){
-        nomeTranca[j]=EEPROM_Ler(i);
-        j++;
-        i++;
-    }    
+    int tecla = -1, teclaAnterior = -1, camada = 0;  
     
     while(1){
         tecla = tecladoMatricial(tecla);
-        /*if(T1CONbits.TMR1ON == 1){
-            if(camada < CAMADA_TECLADO){
-                camada++;
-            }else{
-                camada = 0;
-            }
-        }else{
-            camada = 0;
-        }*/
         if(teclaAnterior == -1 && tecla != teclaAnterior){
             lcd(tecla, camada);
         }
         teclaAnterior = tecla;
-        
-        //Testa se a é a senha da tranca
-        ctrl = 1;
-        for(int i=0;i<4;i++){
-            if(senha[i] != senhaAtual[i]){
-                ctrl = 2;
-            }
-        }
-        //Testa se é a senha do admin
-        for(int i=0;i<4;i++){
-            if(senha[i] != senhaAdmin[i]){
-                ctrl = 0;
-            }
-        }
-        
-        if(ctrl == 1){
-            //Atualiza Display
-            //Aciona relé
-            PORTCbits.RC6 = 1;
-            __delay_ms(100);
-            PORTCbits.RC6 = 0;
-            //Acende o LED
-            PORTDbits.RD0 = 1;                  
-            //Verifica se a porta esta aberta
-            while(PORTEbits.RE3){
-            }
-            //Apaga o LED
-            PORTDbits.RD0 = 0;
-            //Fecha a tranca
-            PORTCbits.RC6 = 1;
-            __delay_ms(100);
-            PORTCbits.RC6 = 0;
-        }
-        if(ctrl == 2){
-            //Atualiza Display
-            //Le teclado
-            //Opção A
-            if(opc == 'A'){
-                //Altera memoria
-                EEPROM_Guardar(0,'S');
-                //Carrega na memória a senha da tranca nova
-                for(int i=1;i<5;i++){
-                    EEPROM_Guardar(i,senhaAtual[i-1]);
-                }
-            }
-            //Opção B
-                //Altera memoria
-                EEPROM_Guardar(0,'S');
-                //Carrega na memória a senha de admin nova
-                for(int i=5;i<9;i++){
-                    EEPROM_Guardar(i,senhaAtual[i-5]);
-                }
-            //Opção C
-                //Altera memoria
-                EEPROM_Guardar(0,'S');
-                //Carrega na memória a senha de admin nova
-                for(int i=9;i<(i+CARACTER_MAX);i++){
-                    EEPROM_Guardar(i,nomeTranca[i-9]);
-                }
-            //Opção D
-                //Atualiza display
-                //Sai da opcao
-        }
     }
     return;
 }
