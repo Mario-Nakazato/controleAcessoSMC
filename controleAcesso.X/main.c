@@ -212,7 +212,7 @@ void config_teclado(){
     TRISBbits.TRISB5 = 1;
     TRISBbits.TRISB6 = 1;
     TRISBbits.TRISB7 = 1;
-    //Gustavo Alexandre
+
     PORTBbits.RB0 = 1;
     PORTBbits.RB1 = 1;
     PORTBbits.RB2 = 1;
@@ -424,14 +424,14 @@ void main(void) {
         teclaAnterior = tecla;
 
         
-        //Testa se a é a senha da tranca
+        //Testa se a ï¿½ a senha da tranca
         ctrl = 1;
         for(int i=0;i<4;i++){
             if(senha[i] != senhaAtual[i]){
                 ctrl = 2;
             }
         }
-        //Testa se é a senha do admin
+        //Testa se ï¿½ a senha do admin
         for(int i=0;i<4;i++){
             if(senha[i] != senhaAdmin[i]){
                 ctrl = 0;
@@ -440,7 +440,7 @@ void main(void) {
         
         if(ctrl == 1){
             //Atualiza Display
-            //Aciona relé
+            //Aciona relï¿½
             PORTCbits.RC6 = 1;
             __delay_ms(100);
             PORTCbits.RC6 = 0;
@@ -459,7 +459,7 @@ void main(void) {
         if(ctrl == 2){
             //Atualiza Display
             //Le teclado
-            //Opção A
+            //Opï¿½ï¿½o A
             if(opc == 'A'){
                 //Altera memoria
                 for(i=MMRINIT1;i<MMREND1;i++){
@@ -468,25 +468,25 @@ void main(void) {
                     j++;
                 }
             }
-            //Opção B
+            //Opï¿½ï¿½o B
             if(opc == 'B'){
-                //Carrega na memória a senha de admin nova
+                //Carrega na memï¿½ria a senha de admin nova
                 for(i=MMRINIT2;i<MMREND2;i++){
                     j=0;
                     EEPROM_Guardar(i,senhaAtual[i-5]);
                     j++;
                 }
             }
-            //Opção C
+            //Opï¿½ï¿½o C
             if(opc == 'C'){
-                //Carrega na memória a senha de admin nova
+                //Carrega na memï¿½ria a senha de admin nova
                 for(i=MMRINIT3;i<MMREND3;i++){
                     j=0;
                     EEPROM_Guardar(i,nomeTranca[i-9]);
                     j++;
                 }
             }
-            //Opção D
+            //Opï¿½ï¿½o D
                 //Atualiza display
                 //Sai da opcao
         }
