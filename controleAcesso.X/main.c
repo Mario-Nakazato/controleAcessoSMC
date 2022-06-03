@@ -212,7 +212,7 @@ void config_teclado(){
     TRISBbits.TRISB5 = 1;
     TRISBbits.TRISB6 = 1;
     TRISBbits.TRISB7 = 1;
-
+    //Gustavo Alexandre
     PORTBbits.RB0 = 1;
     PORTBbits.RB1 = 1;
     PORTBbits.RB2 = 1;
