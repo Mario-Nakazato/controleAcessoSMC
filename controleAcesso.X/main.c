@@ -95,7 +95,7 @@
 #define MMRINIT3 9
 #define MMREND3 25
 
-int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i;
+int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i, comando = 0;
 char senha[CARACTER_MAX] = "";
 
 char teclado[NCAMADA][16] = {
@@ -171,7 +171,7 @@ int teclado_matricial() {
         clique = 1;
         T0CONbits.TMR0ON = 0;
     }
-    if(tecla == -1){
+    if (tecla == -1) {
         clique = 0;
     }
     return tecla;
@@ -191,12 +191,21 @@ void lcd_char(int pos, char caracter) {
 
 void lcd_teclado(int tecla, int camada) {
     if (tecla != -1) {
-        if (teclado[camada][tecla] == '#' && cursor < CARACTER_MAX - 1) {
-            cursor++;
-        } else if (teclado[camada][tecla] == '*' && cursor > CARACTER_MIN) {
-            cursor--;
+        if (tecla == 16) {
+            if (cursor < CARACTER_MAX - 1) {
+                cursor++;
+            }
+        } else if (tecla == 17) {
+            if (cursor > CARACTER_MIN) {
+                cursor--;
+            }
+        } else if (teclado[camada][tecla] == '#') {
+            comando = 1;
+        } else if (teclado[camada][tecla] == '*') {
+            comando = 2;
         } else {
-            if (teclado[camada][tecla] != '#' && teclado[camada][tecla] != '*' && cursor < CARACTER_MAX) {
+            comando = -1;
+            if (cursor < CARACTER_MAX) {
                 lcd_char(LINHA2 + cursor, teclado[camada][tecla]);
             }
         }
@@ -312,8 +321,18 @@ void interrupcao_config() {
 void __interrupt() interrupcao(void) {
     if (INTCONbits.TMR0IF) {
         clique = 0;
-        lcd_teclado(14, 0);
-        camada = NCAMADA -1;
+        switch (comando) {
+            case 1:
+                lcd_teclado(16, 0);
+                break;
+            case 2:
+                lcd_teclado(17, 0);
+                break;
+            default:
+                lcd_teclado(16, 0);
+        }
+        comando = 0;
+        camada = NCAMADA - 1;
         led_piscar();
         T0CONbits.TMR0ON = 0;
         TMR0 = LOADTMR0;
@@ -379,7 +398,7 @@ void main(void) {
     leds_config();
     lcd_config();
     teclado_config();
-    
+
     int senha[4];
     char nomeTranca[CARACTER_MAX], opc;
     int ctrl, i, j, n;
