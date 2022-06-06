@@ -1,0 +1,4 @@
+make: Entering directory '/cygdrive/c/Users/Notebook/Documents/Projeto/controleAcessoSMC/controleAcesso.X'
+make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf
+make[1]: Entering directory '/cygdrive/c/Users/Notebook/Documents/Projeto/controleAcessoSMC/controleAcesso.X'
+ 

@@ -75,9 +75,9 @@
 // Use project enums instead of #define for ON and OFF.
 
 #include <xc.h>
-#include <string.h>
 #include "nxlcd.h"
 #include <stdio.h>
+#include <string.h>
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
 #define CARACTER_MIN 1
@@ -85,9 +85,11 @@
 #define NCAMADA 3
 #define LINHA1 0x80
 #define LINHA2 0xC0
-#define LOADTMR0 0 //55536;
-#define LOADTMR1H 0xB1;
-#define LOADTMR1L 0xE0;
+#define LOADTMR0 45536 //55536;
+#define LOADTMR1H 0x63; // B1E0 0,032s
+#define LOADTMR1L 0xC0; // 63C0 0,064s
+#define NSENHA_TRANCA 3
+#define NSENHA_ADM 3
 #define MMRINIT1 1
 #define MMREND1 5
 #define MMRINIT2 5
@@ -95,8 +97,8 @@
 #define MMRINIT3 9
 #define MMREND3 25
 
-int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i, comando = 0;
-char senha[CARACTER_MAX] = "";
+int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0;
+char senha[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664";
 
 char teclado[NCAMADA][16] = {
     {
@@ -120,6 +122,9 @@ char teclado[NCAMADA][16] = {
 };
 
 int teclado_matricial() {
+    TMR1H = LOADTMR1H;
+    TMR1L = LOADTMR1L;
+    T1CONbits.TMR1ON = 1;
     if (!PORTBbits.RB3) {
         tecla = !PORTBbits.RB4 ? 0 :
                 !PORTBbits.RB5 ? 4 :
@@ -194,19 +199,26 @@ void lcd_teclado(int tecla, int camada) {
         if (tecla == 16) {
             if (cursor < CARACTER_MAX - 1) {
                 cursor++;
+                i++;
             }
         } else if (tecla == 17) {
             if (cursor > CARACTER_MIN) {
                 cursor--;
+                i--;
             }
         } else if (teclado[camada][tecla] == '#') {
             comando = 1;
+            if (i > 0) {
+                i--;
+            }
         } else if (teclado[camada][tecla] == '*') {
             comando = 2;
         } else {
             comando = -1;
             if (cursor < CARACTER_MAX) {
                 lcd_char(LINHA2 + cursor, teclado[camada][tecla]);
+                senha[i] = teclado[camada][tecla];
+                senha[i +1] = '\0';
             }
         }
         WriteCmdXLCD(LINHA2 + cursor);
@@ -242,8 +254,19 @@ void lcd_config() {
     OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
     WriteCmdXLCD(0x01); // Limpa o LCD com retorno do cursor
     lcd_espera();
-    lcd_txt(LINHA1, "Fechadura");
+    lcd_txt(LINHA1, "<Fechadura>");
     lcd_txt(LINHA2, ":");
+}
+
+void rele_config() {
+    TRISCbits.TRISC6 = 0;
+    PORTCbits.RC6 = 0;
+    TRISCbits.TRISC7 = 0;
+    PORTCbits.RC7 = 0;
+    TRISDbits.TRISD6 = 0;
+    PORTDbits.RD6 = 0;
+    TRISDbits.TRISD7 = 0;
+    PORTDbits.RD7 = 0;
 }
 
 void led1_piscar() {
@@ -323,6 +346,7 @@ void __interrupt() interrupcao(void) {
         clique = 0;
         switch (comando) {
             case 1:
+                enter = 1;
                 lcd_teclado(16, 0);
                 break;
             case 2:
@@ -396,14 +420,16 @@ void main(void) {
     timer0_config();
     timer1_config();
     leds_config();
+    rele_config();
     lcd_config();
     teclado_config();
 
+    /*
     int senha[4];
     char nomeTranca[CARACTER_MAX], opc;
     int ctrl, i, j, n;
     int senhaAtual[4], senhaAdmin[4];
-
+    
     init_uart();
 
     if (verificaMemoria()) {
@@ -415,7 +441,7 @@ void main(void) {
             EEPROM_Guardar(i + 4, i);
             senhaAdmin[i] = i;
         }
-        strcpy(nomeTranca, "Trunca");
+        strcpy(nomeTranca, "Fechadura");
         n = strlen(nomeTranca);
 
         j = 0;
@@ -448,10 +474,78 @@ void main(void) {
 
     lcd_txt(LINHA1, nomeTranca);
     lcd_txt(LINHA2, ":");
-
+     */
     while (1) {
+        switch (tela) {
+            case 1:
+                lcd_txt(LINHA1, "[Fechadura]");
+                lcd_txt(LINHA2, ":");
+                WriteCmdXLCD(0x0F);
+                break;
+            case 2:
+                lcd_txt(LINHA1, "Acesso permitido");
+                lcd_txt(LINHA2, "Destrancado");
+                WriteCmdXLCD(0x0C);
+                break;
+            case 3:
+                lcd_txt(LINHA1, "Acesso ADM");
+                lcd_txt(LINHA2, ":");
+                WriteCmdXLCD(0x0F);
+                break;
+            case 4:
+                lcd_txt(LINHA1, "Senha invalida");
+                lcd_txt(LINHA2, "");
+                WriteCmdXLCD(0x0C);
+                __delay_ms(2048);
+                break;
+            case 5:
+                lcd_txt(LINHA1, "Porta fechada");
+                lcd_txt(LINHA2, "Trancado");
+                WriteCmdXLCD(0x0C);
+                __delay_ms(2048);
+                break;
+            default:
+                tela = -1;
+        }
+        tela = -1;
         lcd_teclado(tecla, camada);
         lcd_espera();
+        switch (op) {
+            case 1:
+                if (enter) {
+                    if (i == NSENHA_TRANCA && !strcmp(senha_tranca, senha)) {
+                        op = 3;
+                        tela = 2;
+                        PORTCbits.RC6 = 1;
+                    } else if (i == NSENHA_ADM && !strcmp(senha_adm, senha)) {
+                        tela = 3;
+                    } else {
+                        op = 2;
+                        tela = 4;
+                    }
+                    cursor = 1;
+                    i = 0;
+                    strcpy(senha, " ");
+                    enter = 0;
+                }
+                break;
+            case 2:
+                op = 1;
+                tela = 1;
+                break;
+            case 3:
+                if(enter){
+                    op = 2;
+                    tela = 5;
+                    PORTCbits.RC6 = 0;
+                    enter = 0;
+                }
+                break;
+            default:
+                op = -1;
+        }
+        //op = -1;
+        /*
         //Testa se a � a senha da tranca
         ctrl = 1;
         for (int i = 0; i < 4; i++) {
@@ -517,6 +611,7 @@ void main(void) {
             //Atualiza display
             //Sai da opcao
         }
+         */
     }
     return;
 }
