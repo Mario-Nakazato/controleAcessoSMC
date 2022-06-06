@@ -1,0 +1,201 @@
+[33mcommit b02f654342a39d66dd314684fceea7cba4cb13e5[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Fri Jun 3 01:02:25 2022 -0300
+
+    Retirei o comentario
+
+[33mcommit 71c4b564ce8e1883eb35c1d77c121894f161d8a7[m
+Author: gustavo-eng <diasgustavo2000@hotmail.com>
+Date:   Fri Jun 3 00:57:15 2022 -0300
+
+    Comentario
+
+[33mcommit d888c1b1b4d638b42da559c198f0f0331d8d524e[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Thu Jun 2 16:10:31 2022 -0300
+
+    EEPROM configuração
+
+[33mcommit fda2c5732b507ed52e3313c7d62fdc1e78d10603[m
+Merge: 9d01215 6a19475
+Author: Mario-Nakazato <85094734+Mario-Nakazato@users.noreply.github.com>
+Date:   Wed Jun 1 15:21:33 2022 -0300
+
+    Merge pull request #4 from alfarrh/master
+    
+    Add memory features
+
+[33mcommit 6a1947583ae36842163e84e9ffa055108e6d526d[m
+Merge: bc42e35 9d01215
+Author: Alvaro <alvaro_dcp@outlook.com>
+Date:   Wed Jun 1 15:14:39 2022 -0300
+
+    Correçao de merge
+
+[33mcommit 9d0121598c3ca6b825ba9f241f620d91dbf7f698[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Wed Jun 1 15:10:52 2022 -0300
+
+    Limpar tela e delay no lcd
+
+[33mcommit bc42e351b41cacc479bbb29a1ab882770e8fe7ab[m
+Author: Alvaro <alvaro_dcp@outlook.com>
+Date:   Wed Jun 1 15:10:19 2022 -0300
+
+    Renew memory features
+
+[33mcommit 2121a9c99bfb4d17c8a074093c68e88ae0b9fb2e[m
+Merge: 20d9f3d a341d93
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Wed Jun 1 14:41:26 2022 -0300
+
+    Merge branch 'master' of github.com:Mario-Nakazato/controleAcessoSMC
+
+[33mcommit 20d9f3da18beecfbfd5e72722b01c5ba24671eb1[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Wed Jun 1 14:41:11 2022 -0300
+
+    Bug com camada do teclado retirado por enquanto
+
+[33mcommit a341d9335ff8a3214663ec52b24f873adcedad14[m
+Merge: 8c9e0b4 02d72da
+Author: Álvaro Henrique <83312091+alfarrh@users.noreply.github.com>
+Date:   Wed Jun 1 12:34:27 2022 -0300
+
+    Merge pull request #3 from alfarrh/master
+    
+    ADD MMR/PWD FEATURES
+
+[33mcommit 02d72da757224c66cd86f2576d449d64eaef6ed7[m
+Merge: 9306994 8c9e0b4
+Author: Alvaro <alvaro_dcp@outlook.com>
+Date:   Wed Jun 1 12:27:47 2022 -0300
+
+    Merge branch 'master' of https://github.com/alfarrh/controleAcessoSMC
+
+[33mcommit 9306994756f1e4098aa30090bd1330537d1c7866[m
+Author: Alvaro <alvaro_dcp@outlook.com>
+Date:   Wed Jun 1 12:27:24 2022 -0300
+
+    Updated password/memory features
+
+[33mcommit 8c9e0b42439351a010cc66ec960e26bf3cb29089[m
+Merge: 376c2e8 e8bc80b
+Author: Mario-Nakazato <85094734+Mario-Nakazato@users.noreply.github.com>
+Date:   Wed Jun 1 11:25:08 2022 -0300
+
+    Merge pull request #2 from alfarrh/master
+    
+    Added pwd features again
+
+[33mcommit e8bc80be1fe3302361dc69011f4d155cb1c1697f[m
+Author: Alvaro <alvaro_dcp@outlook.com>
+Date:   Wed Jun 1 11:15:47 2022 -0300
+
+    Added pwd features again
+
+[33mcommit 376c2e853d76dc0889582a30d66be93a6db45f2e[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Wed Jun 1 02:44:48 2022 -0300
+
+    Correção do .gitignore
+
+[33mcommit 662e1a118c33105523c14edd9417d54e24ec7700[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Wed Jun 1 02:19:54 2022 -0300
+
+    Teclado com camadas de tipos de caracteres
+
+[33mcommit 175a94562c4c16e64779110a55573c62bb7fb003[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Wed Jun 1 00:14:13 2022 -0300
+
+    Correção bug do apagar inicializando o timer melhorado
+
+[33mcommit 9cfd5de5a5f505188ce4aaf58d85533822c300e5[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 23:22:02 2022 -0300
+
+    Teclado com trava
+
+[33mcommit 43233b90fafce4cc7b8082388a8a4840f368476f[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 22:09:04 2022 -0300
+
+    .gitignore
+
+[33mcommit a14010cbf6544ccd448bfd116de4c4704d095bfa[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 21:56:54 2022 -0300
+
+    Refatoração
+
+[33mcommit 4ebd9618e081ef6a56428fe6cf82fe20fb39e0ee[m
+Merge: 56e177a a64ad92
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 21:48:30 2022 -0300
+
+    Merge conflito corrigido
+
+[33mcommit a64ad92727d82de24e7b36481b6f55bae0a8007b[m
+Merge: 9e28030 3eb5c7a
+Author: Álvaro Henrique <83312091+alfarrh@users.noreply.github.com>
+Date:   Tue May 31 21:13:38 2022 -0300
+
+    Merge pull request #1 from alfarrh/branch1
+    
+    Added EEPROM functions + Pwd rules
+
+[33mcommit 3eb5c7aa7dbc53069ba003b8c551d5e95462d2a0[m
+Author: alfarrh <alvaro_dcp@outlook.com>
+Date:   Tue May 31 21:02:42 2022 -0300
+
+    Added EEPROM functions + Pwd rules
+
+[33mcommit 56e177a544f2b7696db552c0accdd83e2acac75b[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 20:28:55 2022 -0300
+
+    Configuração do lcd e função texto
+
+[33mcommit 9e2803063ec2121cb1e79f98fecdc4f079e7906b[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 19:39:48 2022 -0300
+
+    Teclado com cursor posicional
+
+[33mcommit 6868492a01a6619f6a569787779ba3cd1b58ae0a[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 18:48:25 2022 -0300
+
+    Teclado matricial com interrupção timer0
+
+[33mcommit af4e46a94a907eaef8d4c075391db8b421974669[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 17:21:03 2022 -0300
+
+    Criado projeto microcontrolado Proteus 8 Professional
+
+[33mcommit 7a2e7757367ef49c4a10bf085505630993d1f546[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 15:29:35 2022 -0300
+
+    Definição inicial LCD e dependências
+
+[33mcommit bb43a4dd4e95022e4f344266b6cee59d07a636cc[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 15:17:20 2022 -0300
+
+    Definição inicial da interrupção
+
+[33mcommit 43ddbd235146099c194789f63559e8cf884f23a6[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 15:16:07 2022 -0300
+
+    main.c e configuration bits do microcontrolador
+
+[33mcommit 28376ff555904759c9b12f5edf9431ece827e9a1[m
+Author: Mario Nakazato <marionakazat@gmail.com>
+Date:   Tue May 31 15:04:46 2022 -0300
+
+    Criando projeto MPLAB X IDE v5.20

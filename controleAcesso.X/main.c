@@ -125,7 +125,7 @@ void lcd(int tecla, int camada){
         ',', '0', 'E', ' '
         }
     };
-    
+    // teste
     if(tecla != -1){
         if(teclado[camada][tecla] == '*' && cursor > LINHA2 +CARACTER_MIN){
             cursor--;
@@ -353,6 +353,24 @@ void init_uart(void) {
 
 
 void main(void) {
+    if(cont == 4){ // não dá para usar sofmente essa verificacao, pode ser 4321  
+            cont = 0;
+            verifica = 1;
+           
+            if(verificador[0] == 10 && hexa == 192){ // corrigir verificacao de posição
+              if(verificador[1] == 20){
+                  if(verificador[2] == 30){
+                      if(verificador[3] == 40) {
+                          WriteCmdXLCD(0x80);
+                          strcpy(setor, "Tela do ADM    ");
+                          putrsXLCD(setor);
+                          WriteCmdXLCD(0xC0);
+                          putrsXLCD("[A] [B] [C] [D]");
+                      }
+                  }
+              }                        
+            }
+        }
     
     config_interrupcao();
     //config_interrupcao0();
