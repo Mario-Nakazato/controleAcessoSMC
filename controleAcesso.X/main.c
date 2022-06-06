@@ -75,19 +75,21 @@
 // Use project enums instead of #define for ON and OFF.
 
 #include <xc.h>
-#include <string.h>
 #include "nxlcd.h"
 #include <stdio.h>
+#include <string.h>
 
 #define _XTAL_FREQ 20000000 // 20MHz frequencia do microcontrolador
-#define CAMADA_TECLADO 3
-#define LOADTMR0 100
-#define LOADTMR1H 0x00
-#define LOADTMR1L 0x00
-#define CARACTER_MAX 16
 #define CARACTER_MIN 1
+#define CARACTER_MAX 16
+#define NCAMADA 3
 #define LINHA1 0x80
 #define LINHA2 0xC0
+#define LOADTMR0 45536 //55536;
+#define LOADTMR1H 0x63; // B1E0 0,032s
+#define LOADTMR1L 0xC0; // 63C0 0,064s
+#define NSENHA_TRANCA 3
+#define NSENHA_ADM 3
 #define MMRINIT1 1
 #define MMREND1 5
 #define MMRINIT2 5
@@ -95,32 +97,26 @@
 #define MMRINIT3 9
 #define MMREND3 25
 
-int cursor = LINHA2 +1;
+int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0;
+char senha[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664";
 
-void lcdTxt(int linha, char *txt){
-    WriteCmdXLCD(linha);
-    putrsXLCD("                ");
-    WriteCmdXLCD(linha);
-    putrsXLCD(txt);
-}
-
-void lcd(int tecla, int camada){
-    char teclado[3][16] = {
-        {
+char teclado[NCAMADA][16] = {
+    {
         '1', '2', '3', 'A',
         '4', '5', '6', 'B',
         '7', '8', '9', 'C',
         '*', '0', '#', 'D'
-        },
-        {
+    },
+    {
         'G', 'H', 'I', 'J',
         'K', 'L', 'M', 'N',
         'O', 'P', 'Q', 'R',
-        'F', 'S', 'E', 'T'
-        },
-        {
+        'E', 'S', 'F', 'T'
+    },
+    {
         'U', 'V', 'W', 'X',
         'Y', 'Z', '?', '!',
+<<<<<<< HEAD
         '"', '"', '(', ')',
         ',', '0', 'E', ' '
         }
@@ -142,68 +138,127 @@ void lcd(int tecla, int camada){
             }
         }
         WriteCmdXLCD(cursor);
+=======
+        '"', '(', ')', ',',
+        '.', '-', '|', ' '
+>>>>>>> 1d2d16c83aa063357c4dce962842837516fffd10
     }
-    /*if(!BusyXLCD()){
-        __delay_ms(8);
-    }*/
-}
+};
 
-void varreduraTeclado(){
-    if(!PORTBbits.RB3){
-        PORTBbits.RB3 = 1;
-        PORTBbits.RB2 = 0;
-    }else if(!PORTBbits.RB2){
-        PORTBbits.RB2 = 1;
-        PORTBbits.RB1 = 0;
-    }else if(!PORTBbits.RB1){
-        PORTBbits.RB1 = 1;
-        PORTBbits.RB0 = 0;
-    }else if(!PORTBbits.RB0){
-        PORTBbits.RB0 = 1;
-        PORTBbits.RB3 = 0;
+int teclado_matricial() {
+    TMR1H = LOADTMR1H;
+    TMR1L = LOADTMR1L;
+    T1CONbits.TMR1ON = 1;
+    if (!PORTBbits.RB3) {
+        tecla = !PORTBbits.RB4 ? 0 :
+                !PORTBbits.RB5 ? 4 :
+                !PORTBbits.RB6 ? 8 :
+                !PORTBbits.RB7 ? 12 : -1;
+        if (tecla == -1) {
+            PORTBbits.RB3 = 1;
+            PORTBbits.RB2 = 0;
+        }
     }
-    TMR0 = LOADTMR0;
-}
-
-int tecladoMatricial(int tecla){
-    if(!PORTBbits.RB3){
-        tecla = !PORTBbits.RB4 ? 0: 
-                !PORTBbits.RB5 ? 4: 
-                !PORTBbits.RB6 ? 8: 
-                !PORTBbits.RB7 ? 12: -1;
-    }else if(!PORTBbits.RB2){
-        tecla = !PORTBbits.RB4 ? 1: 
-                !PORTBbits.RB5 ? 5: 
-                !PORTBbits.RB6 ? 9: 
-                !PORTBbits.RB7 ? 13: -1;
-    }else if(!PORTBbits.RB1){
-        tecla = !PORTBbits.RB4 ? 2: 
-                !PORTBbits.RB5 ? 6: 
-                !PORTBbits.RB6 ? 10: 
-                !PORTBbits.RB7 ? 14: -1;
-    }else if(!PORTBbits.RB0){
-        tecla = !PORTBbits.RB4 ? 3: 
-                !PORTBbits.RB5 ? 7: 
-                !PORTBbits.RB6 ? 11: 
-                !PORTBbits.RB7 ? 15: -1;
+    if (!PORTBbits.RB2) {
+        tecla = !PORTBbits.RB4 ? 1 :
+                !PORTBbits.RB5 ? 5 :
+                !PORTBbits.RB6 ? 9 :
+                !PORTBbits.RB7 ? 13 : -1;
+        if (tecla == -1) {
+            PORTBbits.RB2 = 1;
+            PORTBbits.RB1 = 0;
+        }
     }
-    if(tecla != -1){
-        T0CONbits.TMR0ON = 0;
+    if (!PORTBbits.RB1) {
+        tecla = !PORTBbits.RB4 ? 2 :
+                !PORTBbits.RB5 ? 6 :
+                !PORTBbits.RB6 ? 10 :
+                !PORTBbits.RB7 ? 14 : -1;
+        if (tecla == -1) {
+            PORTBbits.RB1 = 1;
+            PORTBbits.RB0 = 0;
+        }
     }
-    if(tecla == -1 && !T0CONbits.TMR0ON){
+    if (!PORTBbits.RB0) {
+        tecla = !PORTBbits.RB4 ? 3 :
+                !PORTBbits.RB5 ? 7 :
+                !PORTBbits.RB6 ? 11 :
+                !PORTBbits.RB7 ? 15 : -1;
+        if (tecla == -1) {
+            PORTBbits.RB0 = 1;
+            PORTBbits.RB3 = 0;
+        }
+    }
+    if (tecla == -1 && !T0CONbits.TMR0ON && clique) {
         TMR0 = LOADTMR0;
         T0CONbits.TMR0ON = 1;
-        //TMR1 = LOADTMR1;
-        //T1CONbits.TMR1ON = 1;
+    } else if (tecla != -1 && !clique) {
+        camada++;
+        if (camada == NCAMADA) {
+            camada = 0;
+        }
+        clique = 1;
+        T0CONbits.TMR0ON = 0;
+    }
+    if (tecla == -1) {
+        clique = 0;
     }
     return tecla;
 }
 
-void config_teclado(){
-    RBPU = 0; // Ativa resistores de Pull-Up para o PORT B
-    //INTCON2bits.RBPU = 0;
+void lcd_txt(int linha, char *txt) {
+    WriteCmdXLCD(linha);
+    putsXLCD("                ");
+    WriteCmdXLCD(linha);
+    putsXLCD(txt);
+}
+
+void lcd_char(int pos, char caracter) {
+    WriteCmdXLCD(pos);
+    putcXLCD(caracter);
+}
+
+void lcd_teclado(int tecla, int camada) {
+    if (tecla != -1) {
+        if (tecla == 16) {
+            if (cursor < CARACTER_MAX - 1) {
+                cursor++;
+                i++;
+            }
+        } else if (tecla == 17) {
+            if (cursor > CARACTER_MIN) {
+                cursor--;
+                i--;
+            }
+        } else if (teclado[camada][tecla] == '#') {
+            comando = 1;
+            if (i > 0) {
+                i--;
+            }
+        } else if (teclado[camada][tecla] == '*') {
+            comando = 2;
+        } else {
+            comando = -1;
+            if (cursor < CARACTER_MAX) {
+                lcd_char(LINHA2 + cursor, teclado[camada][tecla]);
+                senha[i] = teclado[camada][tecla];
+                senha[i +1] = '\0';
+            }
+        }
+        WriteCmdXLCD(LINHA2 + cursor);
+    }
+}
+
+void lcd_espera() {
+    if (!BusyXLCD()) {
+        __delay_ms(256);
+    }
+}
+
+void teclado_config() {
+    INTCON2bits.RBPU = 0; // Ativa resistores de Pull-Up para o PORT B
     ADCON1 = 0x0F; // PORTA configurada como I/O digital
-    
+
     TRISBbits.TRISB0 = 0;
     TRISBbits.TRISB1 = 0;
     TRISBbits.TRISB2 = 0;
@@ -219,102 +274,131 @@ void config_teclado(){
     PORTBbits.RB3 = 0;
 }
 
-void config_ldc(){
+void lcd_config() {
     OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
-    WriteCmdXLCD(0x01);      	    // Limpa o LCD com retorno do cursor
-    __delay_ms(512);
-    lcdTxt(LINHA1, "Fechadura");
-    lcdTxt(LINHA2, ":");
+    WriteCmdXLCD(0x01); // Limpa o LCD com retorno do cursor
+    lcd_espera();
+    lcd_txt(LINHA1, "<Fechadura>");
+    lcd_txt(LINHA2, ":");
 }
 
-void config_led(){
+void rele_config() {
+    TRISCbits.TRISC6 = 0;
+    PORTCbits.RC6 = 0;
+    TRISCbits.TRISC7 = 0;
+    PORTCbits.RC7 = 0;
+    TRISDbits.TRISD6 = 0;
+    PORTDbits.RD6 = 0;
+    TRISDbits.TRISD7 = 0;
+    PORTDbits.RD7 = 0;
+}
+
+void led1_piscar() {
+    PORTDbits.RD1 = !PORTDbits.RD1;
+}
+
+void led_piscar() {
+    PORTDbits.RD0 = !PORTDbits.RD0;
+}
+
+void leds_config() {
     TRISDbits.TRISD0 = 0;
     PORTDbits.RD0 = 1;
+    TRISDbits.TRISD1 = 0;
+    PORTDbits.RD1 = 1;
 }
 
-void __interrupt() interrupcao(void) {
-    /*if (INTCON3bits.INT1IF) {
-        
-        INTCON3bits.INT1IF = 0;
-    } else if (INTCON3bits.INT2IF) {
-        
-        INTCON3bits.INT2IF = 0;
-    } else */if (INTCONbits.TMR0IF) {
-        varreduraTeclado();
-        //TMR0 = LOADTMR0;
-        INTCONbits.TMR0IF = 0;
-    } /*else if (PIR1bits.TMR1IF) {
-        T1CONbits.TMR1ON = 0;
-        PIR1bits.TMR1IF = 0;
-    }*/
-}
-
-/*
-void __interrupt(low_priority) interrupcao_baixa(void){
-    //PORTD = 0x0F;
-    INTCON3bits.INT1IF = 0; // Limpa o flag bit da interrupcao extrena INT1
-}
-
-void __interrupt(high_priority) interrupcao_alta(void){
-    //PORTD = 0xF0;
-    INTCONbits.INT0IF = 0; // Limpa o flag bit da interrupcao extrena INT0
-}
- */
-
-void config_timer1() {
+void timer1_config() {
     TMR1H = LOADTMR1H;
     TMR1L = LOADTMR1L;
-    T1CONbits.TMR1ON = 1; // Habilitar timer
     T1CONbits.RD16 = 0; // 8-bits ou 16-bits
-    T1CONbits.TMR1CS = 0; // clock interno do microcontrolador
+    T1CONbits.T1RUN = 1;
     T1CONbits.T1CKPS1 = 1;
     T1CONbits.T1CKPS0 = 1;
-    PIE1bits.TMR1IE = 1; // Habilitar Timer
+    T1CONbits.T1OSCEN = 0;
+    T1CONbits.T1SYNC = 0;
+    T1CONbits.TMR1CS = 0; // clock interno do microcontrolador
+    T1CONbits.TMR1ON = 1; // Habilitar timer
+    PIE1bits.TMR1IE = 1; // Habilitar Interrupcao
 }
 
-void config_timer0() {
+void timer0_config() {
     TMR0 = LOADTMR0;
-    T0CONbits.TMR0ON = 1; // Habilitar timer
-    T0CONbits.T08BIT = 1; // 8-bits ou 16-bits
+    T0CONbits.TMR0ON = 0; // Habilitar timer
+    T0CONbits.T08BIT = 0; // 8-bits ou 16-bits
     T0CONbits.T0CS = 0; // clock interno do microcontrolador
     T0CONbits.T0SE = 0;
-    T0CONbits.PSA = 1; // Usar prescaler
+    T0CONbits.PSA = 0; // Usar prescaler
     T0CONbits.T0PS2 = 1;
-    T0CONbits.T0PS1 = 0;
-    T0CONbits.T0PS0 = 0;
-    INTCONbits.TMR0IE = 1; // Habilitar Timer
+    T0CONbits.T0PS1 = 1;
+    T0CONbits.T0PS0 = 1;
+    INTCONbits.TMR0IE = 1; // Habilitar interrupcao
 }
 
 void config_interrupcao2() {
-    INTCON3bits.INT2IE = 1; // ativa a interrupcao externa INT2 (RB2)
+    INTCON3bits.INT2IE = 0; // ativa a interrupcao externa INT2 (RB2)
     INTCON2bits.INTEDG2 = 0; // Interrupcao externa INT2 na borda de descida
     INTCON3bits.INT2IF = 0; // Limpa o flag bit da interrupcao extrena INT2
-    //INTCON3bits.INT2IP = 0;
+    INTCON3bits.INT2IP = 0;
 }
 
 void config_interrupcao1() {
-    INTCON3bits.INT1IE = 1; // ativa a interrupcao externa INT1 (RB1)
+    INTCON3bits.INT1IE = 0; // ativa a interrupcao externa INT1 (RB1)
     INTCON2bits.INTEDG1 = 0; // Interrupcao externa INT1 na borda de descida
     INTCON3bits.INT1IF = 0; // Limpa o flag bit da interrupcao extrena INT1
-    //INTCON3bits.INT1IP = 0;
+    INTCON3bits.INT1IP = 0;
 }
 
 void config_interrupcao0() {
-    INTCONbits.INT0IE = 1; // ativa a interrupcao externa INT0 (RB0)
+    INTCONbits.INT0IE = 0; // ativa a interrupcao externa INT0 (RB0)
     INTCON2bits.INTEDG0 = 0; // Interrupcao externa INT0 na borda de descida
     INTCONbits.INT0IF = 0; // Limpa o flag bit da interrupcao extrena INT0
 }
 
-void config_interrupcao() {
-    RCONbits.IPEN = 1; // Com nivel de prioridade
+void interrupcao_config() {
+    INTCONbits.GIE = 1;
+    INTCONbits.PEIE = 0;
+    RCONbits.IPEN = 1; // Nivel de prioridade
     INTCONbits.GIEH = 1; // Habilita as interrupcoes de alta prioridade
     INTCONbits.GIEL = 1; // Habilita as interrupcoes de baixa prioridade
+    INTCON2bits.TMR0IP = 1;
+    IPR1 = 1;
 }
 
-void EEPROM_Guardar(int dir, char data){
+void __interrupt() interrupcao(void) {
+    if (INTCONbits.TMR0IF) {
+        clique = 0;
+        switch (comando) {
+            case 1:
+                enter = 1;
+                lcd_teclado(16, 0);
+                break;
+            case 2:
+                lcd_teclado(17, 0);
+                break;
+            default:
+                lcd_teclado(16, 0);
+        }
+        comando = 0;
+        camada = NCAMADA - 1;
+        led_piscar();
+        T0CONbits.TMR0ON = 0;
+        TMR0 = LOADTMR0;
+        INTCONbits.TMR0IF = 0;
+    }
+    if (PIR1bits.TMR1IF) {
+        tecla = teclado_matricial();
+        led1_piscar();
+        TMR1H = LOADTMR1H;
+        TMR1L = LOADTMR1L;
+        PIR1bits.TMR1IF = 0;
+    }
+}
+
+void EEPROM_Guardar(int dir, char data) {
     EEADR = dir;
     EEDATA = data;
-    EECON1bits.EEPGD = 0; 
+    EECON1bits.EEPGD = 0;
     EECON1bits.CFGS = 0;
     EECON1bits.WREN = 1;
     INTCONbits.GIE = 0;
@@ -322,12 +406,12 @@ void EEPROM_Guardar(int dir, char data){
     EECON2 = 0x0AA;
     EECON1bits.WR = 1;
     INTCONbits.GIE = 1;
-    while(!PIR2bits.EEIF);
+    while (!PIR2bits.EEIF);
     PIR2bits.EEIF = 0;
     EECON1bits.WREN = 0;
 }
 
-unsigned char EEPROM_Ler(int dir){
+unsigned char EEPROM_Ler(int dir) {
     EEADR = dir;
     EECON1bits.EEPGD = 0;
     EECON1bits.CFGS = 0;
@@ -335,24 +419,25 @@ unsigned char EEPROM_Ler(int dir){
     return EEDATA;
 }
 
-int verificaMemoria(){
-    if(EEPROM_Ler(0)=='S'){
+int verificaMemoria() {
+    if (EEPROM_Ler(0) == 'S') {
         return 0;
-    }
-    else return 1;
-}
-void putch(unsigned char data) {
-    while( ! PIR1bits.TXIF)          // wait until the transmitter is ready
-        continue;
-    TXREG = data;                     // send one character
-}
-void init_uart(void) {
-    TXSTAbits.TXEN = 1;               // enable transmitter
-    RCSTAbits.SPEN = 1;               // enable serial port
+    } else return 1;
 }
 
+void putch(unsigned char data) {
+    while (!PIR1bits.TXIF) // wait until the transmitter is ready
+        continue;
+    TXREG = data; // send one character
+}
+
+void init_uart(void) {
+    TXSTAbits.TXEN = 1; // enable transmitter
+    RCSTAbits.SPEN = 1; // enable serial port
+}
 
 void main(void) {
+<<<<<<< HEAD
     if(cont == 4){ // não dá para usar sofmente essa verificacao, pode ser 4321  
             cont = 0;
             verifica = 1;
@@ -373,99 +458,164 @@ void main(void) {
         }
     
     config_interrupcao();
+=======
+    interrupcao_config();
+>>>>>>> 1d2d16c83aa063357c4dce962842837516fffd10
     //config_interrupcao0();
     //config_interrupcao1();
     //config_interrupcao2();
-    config_timer0();
-    //config_timer1();
-    config_led();
-    config_teclado();
-    config_ldc();
+    timer0_config();
+    timer1_config();
+    leds_config();
+    rele_config();
+    lcd_config();
+    teclado_config();
 
-        
-    int tecla = -1, teclaAnterior = -1, camada = 0;
-    int senha[4]; 
-    char nomeTranca[CARACTER_MAX],opc;
-    int ctrl,i,j,n;
+    /*
+    int senha[4];
+    char nomeTranca[CARACTER_MAX], opc;
+    int ctrl, i, j, n;
     int senhaAtual[4], senhaAdmin[4];
     
     init_uart();
-    
-    if(verificaMemoria()){
+
+    if (verificaMemoria()) {
         printf("Escreve na memory");
-        EEPROM_Guardar(0,'S');
-        for (i=MMRINIT1;i<MMREND1;i++){
-            EEPROM_Guardar(i,1);
+        EEPROM_Guardar(0, 'S');
+        for (i = MMRINIT1; i < MMREND1; i++) {
+            EEPROM_Guardar(i, 1);
             senhaAtual[i] = 1;
-            EEPROM_Guardar(i+4,i);
+            EEPROM_Guardar(i + 4, i);
             senhaAdmin[i] = i;
         }
-        strcpy(nomeTranca,"Trunca");
+        strcpy(nomeTranca, "Fechadura");
         n = strlen(nomeTranca);
-        
-        j=0;
-        for(i=MMRINIT3;i<MMREND3-1;i++){
-            EEPROM_Guardar(i,nomeTranca[j]);
+
+        j = 0;
+        for (i = MMRINIT3; i < MMREND3 - 1; i++) {
+            EEPROM_Guardar(i, nomeTranca[j]);
             j++;
         }
-        EEPROM_Guardar(j,'/');
-        
-    }else{
-        for (i=MMRINIT1;i<MMREND1;i++){
+        EEPROM_Guardar(j, '/');
+
+    } else {
+        for (i = MMRINIT1; i < MMREND1; i++) {
             senhaAtual[i] = atoi(EEPROM_Ler(i));
-            printf("%d",senhaAtual[i]);
+            printf("%d", senhaAtual[i]);
         }
         printf("\n");
-        for (i=MMRINIT2;i<MMREND2;i++){
+        for (i = MMRINIT2; i < MMREND2; i++) {
             senhaAdmin[i] = atoi(EEPROM_Ler(i));
-            printf("%d",senhaAdmin[i]);
+            printf("%d", senhaAdmin[i]);
         }
     }
-    
+
     //Display inicial
-    i=MMRINIT3;
-    j=0;
-    while(EEPROM_Ler(i) != '/'){
-        nomeTranca[j]=EEPROM_Ler(i);
+    i = MMRINIT3;
+    j = 0;
+    while (EEPROM_Ler(i) != '/') {
+        nomeTranca[j] = EEPROM_Ler(i);
         j++;
         i++;
     }
-    
-    lcdTxt(LINHA1,nomeTranca);
-    lcdTxt(LINHA2,":");
 
-    while(1){
-        tecla = tecladoMatricial(tecla);
-        if(teclaAnterior == -1 && tecla != teclaAnterior){
-            lcd(tecla, camada);
+    lcd_txt(LINHA1, nomeTranca);
+    lcd_txt(LINHA2, ":");
+     */
+    while (1) {
+        switch (tela) {
+            case 1:
+                lcd_txt(LINHA1, "[Fechadura]");
+                lcd_txt(LINHA2, ":");
+                WriteCmdXLCD(0x0F);
+                break;
+            case 2:
+                lcd_txt(LINHA1, "Acesso permitido");
+                lcd_txt(LINHA2, "Destrancado");
+                WriteCmdXLCD(0x0C);
+                break;
+            case 3:
+                lcd_txt(LINHA1, "Acesso ADM");
+                lcd_txt(LINHA2, ":");
+                WriteCmdXLCD(0x0F);
+                break;
+            case 4:
+                lcd_txt(LINHA1, "Senha invalida");
+                lcd_txt(LINHA2, "");
+                WriteCmdXLCD(0x0C);
+                __delay_ms(2048);
+                break;
+            case 5:
+                lcd_txt(LINHA1, "Porta fechada");
+                lcd_txt(LINHA2, "Trancado");
+                WriteCmdXLCD(0x0C);
+                __delay_ms(2048);
+                break;
+            default:
+                tela = -1;
         }
-        teclaAnterior = tecla;
-
-        
+        tela = -1;
+        lcd_teclado(tecla, camada);
+        lcd_espera();
+        switch (op) {
+            case 1:
+                if (enter) {
+                    if (i == NSENHA_TRANCA && !strcmp(senha_tranca, senha)) {
+                        op = 3;
+                        tela = 2;
+                        PORTCbits.RC6 = 1;
+                    } else if (i == NSENHA_ADM && !strcmp(senha_adm, senha)) {
+                        tela = 3;
+                    } else {
+                        op = 2;
+                        tela = 4;
+                    }
+                    cursor = 1;
+                    i = 0;
+                    strcpy(senha, " ");
+                    enter = 0;
+                }
+                break;
+            case 2:
+                op = 1;
+                tela = 1;
+                break;
+            case 3:
+                if(enter){
+                    op = 2;
+                    tela = 5;
+                    PORTCbits.RC6 = 0;
+                    enter = 0;
+                }
+                break;
+            default:
+                op = -1;
+        }
+        //op = -1;
+        /*
         //Testa se a � a senha da tranca
         ctrl = 1;
-        for(int i=0;i<4;i++){
-            if(senha[i] != senhaAtual[i]){
+        for (int i = 0; i < 4; i++) {
+            if (senha[i] != senhaAtual[i]) {
                 ctrl = 2;
             }
         }
         //Testa se � a senha do admin
-        for(int i=0;i<4;i++){
-            if(senha[i] != senhaAdmin[i]){
+        for (int i = 0; i < 4; i++) {
+            if (senha[i] != senhaAdmin[i]) {
                 ctrl = 0;
             }
         }
-        
-        if(ctrl == 1){
+        if (ctrl == 1) {
             //Atualiza Display
             //Aciona rel�
             PORTCbits.RC6 = 1;
             __delay_ms(100);
             PORTCbits.RC6 = 0;
             //Acende o LED
-            PORTDbits.RD0 = 1;                  
+            PORTDbits.RD0 = 1;
             //Verifica se a porta esta aberta
-            while(PORTEbits.RE3){
+            while (PORTEbits.RE3) {
             }
             //Apaga o LED
             PORTDbits.RD0 = 0;
@@ -474,41 +624,41 @@ void main(void) {
             __delay_ms(100);
             PORTCbits.RC6 = 0;
         }
-        if(ctrl == 2){
+        if (ctrl == 2) {
             //Atualiza Display
             //Le teclado
             //Op��o A
-            if(opc == 'A'){
+            if (opc == 'A') {
                 //Altera memoria
-                for(i=MMRINIT1;i<MMREND1;i++){
-                    j=0;
-                    EEPROM_Guardar(i,senhaAtual[j]);
+                for (i = MMRINIT1; i < MMREND1; i++) {
+                    j = 0;
+                    EEPROM_Guardar(i, senhaAtual[j]);
                     j++;
                 }
             }
             //Op��o B
-            if(opc == 'B'){
+            if (opc == 'B') {
                 //Carrega na mem�ria a senha de admin nova
-                for(i=MMRINIT2;i<MMREND2;i++){
-                    j=0;
-                    EEPROM_Guardar(i,senhaAtual[i-5]);
+                for (i = MMRINIT2; i < MMREND2; i++) {
+                    j = 0;
+                    EEPROM_Guardar(i, senhaAtual[i - 5]);
                     j++;
                 }
             }
             //Op��o C
-            if(opc == 'C'){
+            if (opc == 'C') {
                 //Carrega na mem�ria a senha de admin nova
-                for(i=MMRINIT3;i<MMREND3;i++){
-                    j=0;
-                    EEPROM_Guardar(i,nomeTranca[i-9]);
+                for (i = MMRINIT3; i < MMREND3; i++) {
+                    j = 0;
+                    EEPROM_Guardar(i, nomeTranca[i - 9]);
                     j++;
                 }
             }
             //Op��o D
-                //Atualiza display
-                //Sai da opcao
+            //Atualiza display
+            //Sai da opcao
         }
-
+         */
     }
     return;
 }
