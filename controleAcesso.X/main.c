@@ -90,12 +90,13 @@
 #define LOADTMR1L 0xC0; // 63C0 0,064s
 #define NSENHA_TRANCA 4
 #define NSENHA_ADM 4
-#define MMRINIT1 1
-#define MMREND1 5
-#define MMRINIT2 5
-#define MMREND2 9
-#define MMRINIT3 9
-#define MMREND3 25
+#define NOME "AB"
+#define MMRINIT1 0x00
+#define MMREND1 0x0F
+#define MMRINIT2 0x10
+#define MMREND2 0x1F
+#define MMRINIT3 0x20
+#define MMREND3 0x2F
 
 int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0, n, k, j;
 char entrada[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664", nome[CARACTER_MAX] = "Fechadura";
@@ -390,10 +391,8 @@ unsigned char EEPROM_Ler(int dir) {
     return EEDATA;
 }
 
-int verificaMemoria() {
-    if (EEPROM_Ler(0) == 'S') {
-        return 0;
-    } else return 1;
+int verifica_memoria() {
+    return EEPROM_Ler(0x00) == 0xFF ? 0 : 1;
 }
 
 void putch(unsigned char data) {
@@ -408,42 +407,36 @@ void init_uart(void) {
 }
 
 void main(void) {
-    /*if (verificaMemoria()) {
-        EEPROM_Guardar(0, 'S');
-        for (i = MMRINIT1; i < MMREND1; i++) {
-            EEPROM_Guardar(i, 1);
-            senha_tranca[i] = 1;
-            EEPROM_Guardar(i + 4, i);
-            senha_adm[i] = i;
+    if (!verifica_memoria()) {
+        for (i = 0; i < NSENHA_ADM; i++) {
+            EEPROM_Guardar(MMRINIT1 + i, '0');
+            senha_adm[i] = '0';
         }
-        strcpy(nome, "Fechadura");
+        for (i = 0; i < NSENHA_TRANCA; i++) {
+            EEPROM_Guardar(MMRINIT2 + i, i + 1 + 48);
+            senha_tranca[i] = i + 1 + 48;
+
+        }
+        strcpy(nome, NOME);
         n = strlen(nome);
-
-        j = 0;
-        for (i = MMRINIT3; i < MMREND3 - 1; i++) {
-            EEPROM_Guardar(i, nome[j]);
-            j++;
+        for (i = 0; i < n; i++) {
+            EEPROM_Guardar(MMRINIT3 + i, nome[i]);
         }
-        EEPROM_Guardar(j, '/');
-
     } else {
-        for (i = MMRINIT1; i < MMREND1; i++) {
-            senha_tranca[i] = EEPROM_Ler(i);
-        }
+        for (i = 0; EEPROM_Ler(MMRINIT3 +i) != 0xFF; i++) {
+            nome[i] = EEPROM_Ler(MMRINIT3 +i);
+        }/*
         for (i = MMRINIT2; i < MMREND2; i++) {
             senha_adm[i] = EEPROM_Ler(i);
         }
+        i = MMRINIT3;
+        j = 0;
+        while (EEPROM_Ler(i) != '/') {
+            nome[j] = EEPROM_Ler(i);
+            j++;
+            i++;
+        }*/
     }
-
-    //Display inicial
-    i = MMRINIT3;
-    j = 0;
-    while (EEPROM_Ler(i) != '/') {
-        nome[j] = EEPROM_Ler(i);
-        j++;
-        i++;
-    }
-     */
 
     i = 0;
     interrupcao_config();
@@ -527,11 +520,11 @@ void main(void) {
         switch (op) {
             case 1:
                 if (enter) {
-                    if (!strncmp(senha_tranca, entrada, NSENHA_TRANCA)) {
+                    if (!strcmp(senha_tranca, entrada)) {
                         op = 3;
                         tela = 2;
                         PORTCbits.RC6 = 1;
-                    } else if (!strncmp(senha_adm, entrada, NSENHA_TRANCA)) {
+                    } else if (!strcmp(senha_adm, entrada)) {
                         op = 4;
                         tela = 3;
                     } else {
