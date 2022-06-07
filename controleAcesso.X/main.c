@@ -445,6 +445,7 @@ void main(void) {
     }
     
     i = 0;
+
     interrupcao_config();
     //config_interrupcao0();
     //config_interrupcao1();
