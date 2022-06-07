@@ -98,7 +98,7 @@
 #define MMREND3 25
 
 int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0, n, k, j;
-char senha[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664", nome[CARACTER_MAX] = "Fechadura";
+char entrada[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664", nome[CARACTER_MAX] = "Fechadura";
 
 char teclado[NCAMADA][16] = {
     {
@@ -116,32 +116,8 @@ char teclado[NCAMADA][16] = {
     {
         'U', 'V', 'W', 'X',
         'Y', 'Z', '?', '!',
-<<<<<<< HEAD
-        '"', '"', '(', ')',
-        ',', '0', 'E', ' '
-        }
-    };
-    // teste
-    if(tecla != -1){
-        if(teclado[camada][tecla] == '*' && cursor > LINHA2 +CARACTER_MIN){
-            cursor--;
-        }else if(teclado[camada][tecla] == '#' && cursor < LINHA2 +CARACTER_MAX){
-            cursor++;
-        }else if(teclado[camada][tecla] != '*' && teclado[camada][tecla] != '#'){
-            if(cursor < LINHA2 +CARACTER_MAX){
-                WriteCmdXLCD(cursor);
-                putcXLCD(teclado[camada][tecla]);
-                __delay_ms(512);
-                //if(T1CONbits.TMR1ON == 0){
-                    cursor++;
-                //}
-            }
-        }
-        WriteCmdXLCD(cursor);
-=======
         '"', '(', ')', ',',
         '.', '-', '|', ' '
->>>>>>> 1d2d16c83aa063357c4dce962842837516fffd10
     }
 };
 
@@ -238,8 +214,8 @@ void lcd_teclado(int tecla, int camada) {
             comando = -1;
             if (cursor < CARACTER_MAX) {
                 lcd_char(LINHA2 + cursor, teclado[camada][tecla]);
-                senha[i] = teclado[camada][tecla];
-                senha[i + 1] = '\0';
+                entrada[i] = teclado[camada][tecla];
+                entrada[i + 1] = '\0';
             }
         }
         WriteCmdXLCD(LINHA2 + cursor);
@@ -432,8 +408,7 @@ void init_uart(void) {
 }
 
 void main(void) {
-<<<<<<< HEAD
-    if (verificaMemoria()) {
+    /*if (verificaMemoria()) {
         EEPROM_Guardar(0, 'S');
         for (i = MMRINIT1; i < MMREND1; i++) {
             EEPROM_Guardar(i, 1);
@@ -468,35 +443,10 @@ void main(void) {
         j++;
         i++;
     }
-    
-    i = 0;
+     */
 
-=======
-<<<<<<< HEAD
-    if(cont == 4){ // não dá para usar sofmente essa verificacao, pode ser 4321  
-            cont = 0;
-            verifica = 1;
-           
-            if(verificador[0] == 10 && hexa == 192){ // corrigir verificacao de posição
-              if(verificador[1] == 20){
-                  if(verificador[2] == 30){
-                      if(verificador[3] == 40) {
-                          WriteCmdXLCD(0x80);
-                          strcpy(setor, "Tela do ADM    ");
-                          putrsXLCD(setor);
-                          WriteCmdXLCD(0xC0);
-                          putrsXLCD("[A] [B] [C] [D]");
-                      }
-                  }
-              }                        
-            }
-        }
-    
-    config_interrupcao();
-=======
->>>>>>> 1f7d4cecaa240b25ddc94bf93abd3ced8cb9b52b
+    i = 0;
     interrupcao_config();
->>>>>>> 1d2d16c83aa063357c4dce962842837516fffd10
     //config_interrupcao0();
     //config_interrupcao1();
     //config_interrupcao2();
@@ -556,6 +506,18 @@ void main(void) {
                 WriteCmdXLCD(0x0C);
                 __delay_ms(2048);
                 break;
+            case 10:
+                lcd_txt(LINHA1, "Nova senha");
+                lcd_txt(LINHA2, "cadastrada");
+                WriteCmdXLCD(0x0C);
+                __delay_ms(2048);
+                break;
+            case 11:
+                lcd_txt(LINHA1, "Novo nome");
+                lcd_txt(LINHA2, "cadastrado");
+                WriteCmdXLCD(0x0C);
+                __delay_ms(2048);
+                break;
             default:
                 tela = -1;
         }
@@ -565,11 +527,11 @@ void main(void) {
         switch (op) {
             case 1:
                 if (enter) {
-                    if (!strncmp(senha_tranca, senha, NSENHA_TRANCA)) {
+                    if (!strncmp(senha_tranca, entrada, NSENHA_TRANCA)) {
                         op = 3;
                         tela = 2;
                         PORTCbits.RC6 = 1;
-                    } else if (!strncmp(senha_adm, senha, NSENHA_TRANCA)) {
+                    } else if (!strncmp(senha_adm, entrada, NSENHA_TRANCA)) {
                         op = 4;
                         tela = 3;
                     } else {
@@ -578,7 +540,7 @@ void main(void) {
                     }
                     cursor = 1;
                     i = 0;
-                    strcpy(senha, "");
+                    strcpy(entrada, "");
                     enter = 0;
                 }
                 break;
@@ -587,7 +549,7 @@ void main(void) {
                 tela = 1;
                 cursor = 1;
                 i = 0;
-                strcpy(senha, "");
+                strcpy(entrada, "");
                 break;
             case 3:
                 if (enter) {
@@ -595,19 +557,21 @@ void main(void) {
                     tela = 5;
                     cursor = 1;
                     i = 0;
-                    strcpy(senha, "");
+                    strcpy(entrada, "");
                     PORTCbits.RC6 = 0;
                     enter = 0;
                 }
                 break;
             case 4:
                 if (enter) {
-                    if (!strncmp("A", senha, 1)) {
+                    if (!strncmp("A", entrada, 1)) {
                         op = 5;
                         tela = 6;
-                    } else if (!strncmp("B", senha, 1)) {
+                    } else if (!strncmp("B", entrada, 1)) {
+                        op = 6;
                         tela = 7;
-                    } else if (!strncmp("C", senha, 1)) {
+                    } else if (!strncmp("C", entrada, 1)) {
+                        op = 7;
                         tela = 8;
                     } else {
                         op = 2;
@@ -615,18 +579,40 @@ void main(void) {
                     }
                     cursor = 1;
                     i = 0;
-                    strcpy(senha, "");
+                    strcpy(entrada, "");
                     enter = 0;
                 }
                 break;
             case 5:
                 if (enter) {
-                    //op = 3;
-                    //tela = 2;
-                    strcpy(senha_adm, senha);
+                    op = 2;
+                    tela = 10;
+                    strcpy(senha_adm, entrada);
                     cursor = 1;
                     i = 0;
-                    strcpy(senha, "");
+                    strcpy(entrada, "");
+                    enter = 0;
+                }
+                break;
+            case 6:
+                if (enter) {
+                    op = 2;
+                    tela = 10;
+                    strcpy(senha_tranca, entrada);
+                    cursor = 1;
+                    i = 0;
+                    strcpy(entrada, "");
+                    enter = 0;
+                }
+                break;
+            case 7:
+                if (enter) {
+                    op = 2;
+                    tela = 11;
+                    strcpy(nome, entrada);
+                    cursor = 1;
+                    i = 0;
+                    strcpy(entrada, "");
                     enter = 0;
                 }
                 break;
@@ -637,13 +623,13 @@ void main(void) {
         //Testa se a � a senha da tranca
         ctrl = 1;
         for (int i = 0; i < 4; i++) {
-            if (senha[i] != senhaAtual[i]) {
+            if (entrada[i] != senhaAtual[i]) {
                 ctrl = 2;
             }
         }
         //Testa se � a senha do admin
         for (int i = 0; i < 4; i++) {
-            if (senha[i] != senhaAdmin[i]) {
+            if (entrada[i] != senhaAdmin[i]) {
                 ctrl = 0;
             }
         }
