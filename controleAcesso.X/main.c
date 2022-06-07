@@ -1,5 +1,7 @@
 /*
  * File:   main.c
+ * Author: Alvaro Henrique Nunes de Lime R.A 2142520
+ * Author: Gustavo Alexandre Dias R.A 2052229
  * Author: Mario Nakazato Neto R.A 2142643
  *
  * Created on 31 de Maio de 2022, 15:05
