@@ -88,8 +88,8 @@
 #define LOADTMR0 45536 //55536;
 #define LOADTMR1H 0x63; // B1E0 0,032s
 #define LOADTMR1L 0xC0; // 63C0 0,064s
-#define NSENHA_TRANCA 3
-#define NSENHA_ADM 3
+#define NSENHA_TRANCA 4
+#define NSENHA_ADM 4
 #define MMRINIT1 1
 #define MMREND1 5
 #define MMRINIT2 5
@@ -97,8 +97,8 @@
 #define MMRINIT3 9
 #define MMREND3 25
 
-int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0;
-char senha[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664";
+int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0, n, k, j;
+char senha[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664", nome[CARACTER_MAX] = "Fechadura";
 
 char teclado[NCAMADA][16] = {
     {
@@ -208,9 +208,6 @@ void lcd_teclado(int tecla, int camada) {
             }
         } else if (teclado[camada][tecla] == '#') {
             comando = 1;
-            if (i > 0) {
-                i--;
-            }
         } else if (teclado[camada][tecla] == '*') {
             comando = 2;
         } else {
@@ -218,7 +215,7 @@ void lcd_teclado(int tecla, int camada) {
             if (cursor < CARACTER_MAX) {
                 lcd_char(LINHA2 + cursor, teclado[camada][tecla]);
                 senha[i] = teclado[camada][tecla];
-                senha[i +1] = '\0';
+                senha[i + 1] = '\0';
             }
         }
         WriteCmdXLCD(LINHA2 + cursor);
@@ -254,8 +251,6 @@ void lcd_config() {
     OpenXLCD(FOUR_BIT & LINES_5X7); // Modo 4 bits de dados e caracteres 5x7
     WriteCmdXLCD(0x01); // Limpa o LCD com retorno do cursor
     lcd_espera();
-    lcd_txt(LINHA1, "<Fechadura>");
-    lcd_txt(LINHA2, ":");
 }
 
 void rele_config() {
@@ -413,6 +408,43 @@ void init_uart(void) {
 }
 
 void main(void) {
+    if (verificaMemoria()) {
+        EEPROM_Guardar(0, 'S');
+        for (i = MMRINIT1; i < MMREND1; i++) {
+            EEPROM_Guardar(i, 1);
+            senha_tranca[i] = 1;
+            EEPROM_Guardar(i + 4, i);
+            senha_adm[i] = i;
+        }
+        strcpy(nome, "Fechadura");
+        n = strlen(nome);
+
+        j = 0;
+        for (i = MMRINIT3; i < MMREND3 - 1; i++) {
+            EEPROM_Guardar(i, nome[j]);
+            j++;
+        }
+        EEPROM_Guardar(j, '/');
+
+    } else {
+        for (i = MMRINIT1; i < MMREND1; i++) {
+            senha_tranca[i] = EEPROM_Ler(i);
+        }
+        for (i = MMRINIT2; i < MMREND2; i++) {
+            senha_adm[i] = EEPROM_Ler(i);
+        }
+    }
+
+    //Display inicial
+    i = MMRINIT3;
+    j = 0;
+    while (EEPROM_Ler(i) != '/') {
+        nome[j] = EEPROM_Ler(i);
+        j++;
+        i++;
+    }
+    
+    i = 0;
     interrupcao_config();
     //config_interrupcao0();
     //config_interrupcao1();
@@ -423,62 +455,10 @@ void main(void) {
     rele_config();
     lcd_config();
     teclado_config();
-
-    /*
-    int senha[4];
-    char nomeTranca[CARACTER_MAX], opc;
-    int ctrl, i, j, n;
-    int senhaAtual[4], senhaAdmin[4];
-    
-    init_uart();
-
-    if (verificaMemoria()) {
-        printf("Escreve na memory");
-        EEPROM_Guardar(0, 'S');
-        for (i = MMRINIT1; i < MMREND1; i++) {
-            EEPROM_Guardar(i, 1);
-            senhaAtual[i] = 1;
-            EEPROM_Guardar(i + 4, i);
-            senhaAdmin[i] = i;
-        }
-        strcpy(nomeTranca, "Fechadura");
-        n = strlen(nomeTranca);
-
-        j = 0;
-        for (i = MMRINIT3; i < MMREND3 - 1; i++) {
-            EEPROM_Guardar(i, nomeTranca[j]);
-            j++;
-        }
-        EEPROM_Guardar(j, '/');
-
-    } else {
-        for (i = MMRINIT1; i < MMREND1; i++) {
-            senhaAtual[i] = atoi(EEPROM_Ler(i));
-            printf("%d", senhaAtual[i]);
-        }
-        printf("\n");
-        for (i = MMRINIT2; i < MMREND2; i++) {
-            senhaAdmin[i] = atoi(EEPROM_Ler(i));
-            printf("%d", senhaAdmin[i]);
-        }
-    }
-
-    //Display inicial
-    i = MMRINIT3;
-    j = 0;
-    while (EEPROM_Ler(i) != '/') {
-        nomeTranca[j] = EEPROM_Ler(i);
-        j++;
-        i++;
-    }
-
-    lcd_txt(LINHA1, nomeTranca);
-    lcd_txt(LINHA2, ":");
-     */
     while (1) {
         switch (tela) {
             case 1:
-                lcd_txt(LINHA1, "[Fechadura]");
+                lcd_txt(LINHA1, nome);
                 lcd_txt(LINHA2, ":");
                 WriteCmdXLCD(0x0F);
                 break;
@@ -504,6 +484,27 @@ void main(void) {
                 WriteCmdXLCD(0x0C);
                 __delay_ms(2048);
                 break;
+            case 6:
+                lcd_txt(LINHA1, "Nova senha ADM");
+                lcd_txt(LINHA2, ":");
+                WriteCmdXLCD(0x0F);
+                break;
+            case 7:
+                lcd_txt(LINHA1, "Nova senha");
+                lcd_txt(LINHA2, ":");
+                WriteCmdXLCD(0x0F);
+                break;
+            case 8:
+                lcd_txt(LINHA1, "Novo nome");
+                lcd_txt(LINHA2, ":");
+                WriteCmdXLCD(0x0F);
+                break;
+            case 9:
+                lcd_txt(LINHA1, "Escolha invalida");
+                lcd_txt(LINHA2, "");
+                WriteCmdXLCD(0x0C);
+                __delay_ms(2048);
+                break;
             default:
                 tela = -1;
         }
@@ -513,11 +514,12 @@ void main(void) {
         switch (op) {
             case 1:
                 if (enter) {
-                    if (i == NSENHA_TRANCA && !strcmp(senha_tranca, senha)) {
+                    if (!strncmp(senha_tranca, senha, NSENHA_TRANCA)) {
                         op = 3;
                         tela = 2;
                         PORTCbits.RC6 = 1;
-                    } else if (i == NSENHA_ADM && !strcmp(senha_adm, senha)) {
+                    } else if (!strncmp(senha_adm, senha, NSENHA_TRANCA)) {
+                        op = 4;
                         tela = 3;
                     } else {
                         op = 2;
@@ -525,26 +527,61 @@ void main(void) {
                     }
                     cursor = 1;
                     i = 0;
-                    strcpy(senha, " ");
+                    strcpy(senha, "");
                     enter = 0;
                 }
                 break;
             case 2:
                 op = 1;
                 tela = 1;
+                cursor = 1;
+                i = 0;
+                strcpy(senha, "");
                 break;
             case 3:
-                if(enter){
+                if (enter) {
                     op = 2;
                     tela = 5;
+                    cursor = 1;
+                    i = 0;
+                    strcpy(senha, "");
                     PORTCbits.RC6 = 0;
+                    enter = 0;
+                }
+                break;
+            case 4:
+                if (enter) {
+                    if (!strncmp("A", senha, 1)) {
+                        op = 5;
+                        tela = 6;
+                    } else if (!strncmp("B", senha, 1)) {
+                        tela = 7;
+                    } else if (!strncmp("C", senha, 1)) {
+                        tela = 8;
+                    } else {
+                        op = 2;
+                        tela = 9;
+                    }
+                    cursor = 1;
+                    i = 0;
+                    strcpy(senha, "");
+                    enter = 0;
+                }
+                break;
+            case 5:
+                if (enter) {
+                    //op = 3;
+                    //tela = 2;
+                    strcpy(senha_adm, senha);
+                    cursor = 1;
+                    i = 0;
+                    strcpy(senha, "");
                     enter = 0;
                 }
                 break;
             default:
                 op = -1;
         }
-        //op = -1;
         /*
         //Testa se a � a senha da tranca
         ctrl = 1;
