@@ -90,7 +90,9 @@
 #define LOADTMR1L 0xC0; // 63C0 0,064s
 #define NSENHA_TRANCA 4
 #define NSENHA_ADM 4
-#define NOME "AB"
+#define SENHA_ADM "0000"
+#define SENHA_TRANCA "1234"
+#define NOME "Fechadura"
 #define MMRINIT1 0x00
 #define MMREND1 0x0F
 #define MMRINIT2 0x10
@@ -99,7 +101,7 @@
 #define MMREND3 0x2F
 
 int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0, n, k, j;
-char entrada[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX] = "3264", senha_adm[CARACTER_MAX] = "8664", nome[CARACTER_MAX] = "Fechadura";
+char entrada[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX], senha_adm[CARACTER_MAX], nome[CARACTER_MAX];
 
 char teclado[NCAMADA][16] = {
     {
@@ -383,13 +385,39 @@ void EEPROM_Guardar(int dir, char data) {
     EECON1bits.WREN = 0;
 }
 
-unsigned char EEPROM_Ler(int dir) {
+void EEPROM_GuardarVetor(int dir, char *data) {
+    int j = 0;
+    for (int i = (CARACTER_MAX * dir); i <= (CARACTER_MAX * (dir + 1)); i++) {
+        EEPROM_Guardar(i, data[j]);
+        j++;
+    }
+    EEPROM_Guardar(i, 0xFF);
+}
+
+char EEPROM_Ler(int dir) {
     EEADR = dir;
     EECON1bits.EEPGD = 0;
     EECON1bits.CFGS = 0;
     EECON1bits.RD = 1;
     return EEDATA;
 }
+
+void EEPROM_LerVetor(int dir, char *data) {
+
+    int j = 0;
+    for (int i = 0; EEPROM_Ler(CARACTER_MAX * dir + i) != 0xFF ; i++) {
+        data[j] = EEPROM_Ler((CARACTER_MAX * dir) + i);
+        j++;
+    }
+}
+
+void EEPROM_Reset() {
+    char data[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    for (int i = 0; i < 16; i++) {
+        EEPROM_GuardarVetor(i, data);
+    }
+    EEPROM_Guardar(0,0xFF);
+};
 
 int verifica_memoria() {
     return EEPROM_Ler(0x00) == 0xFF ? 0 : 1;
@@ -407,37 +435,21 @@ void init_uart(void) {
 }
 
 void main(void) {
+    //EEPROM_Reset();
     if (!verifica_memoria()) {
-        for (i = 0; i < NSENHA_ADM; i++) {
-            EEPROM_Guardar(MMRINIT1 + i, '0');
-            senha_adm[i] = '0';
-        }
-        for (i = 0; i < NSENHA_TRANCA; i++) {
-            EEPROM_Guardar(MMRINIT2 + i, i + 1 + 48);
-            senha_tranca[i] = i + 1 + 48;
 
-        }
+        strcpy(senha_adm, SENHA_ADM);
+        EEPROM_GuardarVetor(0, senha_adm);
+        strcpy(senha_tranca, SENHA_TRANCA);
+        EEPROM_GuardarVetor(1, senha_tranca);
         strcpy(nome, NOME);
-        n = strlen(nome);
-        for (i = 0; i < n; i++) {
-            EEPROM_Guardar(MMRINIT3 + i, nome[i]);
-        }
-    } else {
-        for (i = 0; EEPROM_Ler(MMRINIT3 +i) != 0xFF; i++) {
-            nome[i] = EEPROM_Ler(MMRINIT3 +i);
-        }/*
-        for (i = MMRINIT2; i < MMREND2; i++) {
-            senha_adm[i] = EEPROM_Ler(i);
-        }
-        i = MMRINIT3;
-        j = 0;
-        while (EEPROM_Ler(i) != '/') {
-            nome[j] = EEPROM_Ler(i);
-            j++;
-            i++;
-        }*/
-    }
+        EEPROM_GuardarVetor(2, nome);
 
+    } else {
+        EEPROM_LerVetor(0, senha_adm);
+        EEPROM_LerVetor(1, senha_tranca);
+        EEPROM_LerVetor(2, nome);
+    }
     i = 0;
     interrupcao_config();
     //config_interrupcao0();
@@ -581,6 +593,7 @@ void main(void) {
                     op = 2;
                     tela = 10;
                     strcpy(senha_adm, entrada);
+                    EEPROM_GuardarVetor(0, senha_adm);
                     cursor = 1;
                     i = 0;
                     strcpy(entrada, "");
@@ -592,6 +605,7 @@ void main(void) {
                     op = 2;
                     tela = 10;
                     strcpy(senha_tranca, entrada);
+                    EEPROM_GuardarVetor(1, senha_tranca);
                     cursor = 1;
                     i = 0;
                     strcpy(entrada, "");
@@ -603,6 +617,7 @@ void main(void) {
                     op = 2;
                     tela = 11;
                     strcpy(nome, entrada);
+                    EEPROM_GuardarVetor(2, nome);
                     cursor = 1;
                     i = 0;
                     strcpy(entrada, "");
@@ -612,73 +627,6 @@ void main(void) {
             default:
                 op = -1;
         }
-        /*
-        //Testa se a � a senha da tranca
-        ctrl = 1;
-        for (int i = 0; i < 4; i++) {
-            if (entrada[i] != senhaAtual[i]) {
-                ctrl = 2;
-            }
-        }
-        //Testa se � a senha do admin
-        for (int i = 0; i < 4; i++) {
-            if (entrada[i] != senhaAdmin[i]) {
-                ctrl = 0;
-            }
-        }
-        if (ctrl == 1) {
-            //Atualiza Display
-            //Aciona rel�
-            PORTCbits.RC6 = 1;
-            __delay_ms(100);
-            PORTCbits.RC6 = 0;
-            //Acende o LED
-            PORTDbits.RD0 = 1;
-            //Verifica se a porta esta aberta
-            while (PORTEbits.RE3) {
-            }
-            //Apaga o LED
-            PORTDbits.RD0 = 0;
-            //Fecha a tranca
-            PORTCbits.RC6 = 1;
-            __delay_ms(100);
-            PORTCbits.RC6 = 0;
-        }
-        if (ctrl == 2) {
-            //Atualiza Display
-            //Le teclado
-            //Op��o A
-            if (opc == 'A') {
-                //Altera memoria
-                for (i = MMRINIT1; i < MMREND1; i++) {
-                    j = 0;
-                    EEPROM_Guardar(i, senhaAtual[j]);
-                    j++;
-                }
-            }
-            //Op��o B
-            if (opc == 'B') {
-                //Carrega na mem�ria a senha de admin nova
-                for (i = MMRINIT2; i < MMREND2; i++) {
-                    j = 0;
-                    EEPROM_Guardar(i, senhaAtual[i - 5]);
-                    j++;
-                }
-            }
-            //Op��o C
-            if (opc == 'C') {
-                //Carrega na mem�ria a senha de admin nova
-                for (i = MMRINIT3; i < MMREND3; i++) {
-                    j = 0;
-                    EEPROM_Guardar(i, nomeTranca[i - 9]);
-                    j++;
-                }
-            }
-            //Op��o D
-            //Atualiza display
-            //Sai da opcao
-        }
-         */
     }
     return;
 }
