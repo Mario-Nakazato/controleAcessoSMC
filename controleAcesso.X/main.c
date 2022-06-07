@@ -116,8 +116,32 @@ char teclado[NCAMADA][16] = {
     {
         'U', 'V', 'W', 'X',
         'Y', 'Z', '?', '!',
+<<<<<<< HEAD
+        '"', '"', '(', ')',
+        ',', '0', 'E', ' '
+        }
+    };
+    // teste
+    if(tecla != -1){
+        if(teclado[camada][tecla] == '*' && cursor > LINHA2 +CARACTER_MIN){
+            cursor--;
+        }else if(teclado[camada][tecla] == '#' && cursor < LINHA2 +CARACTER_MAX){
+            cursor++;
+        }else if(teclado[camada][tecla] != '*' && teclado[camada][tecla] != '#'){
+            if(cursor < LINHA2 +CARACTER_MAX){
+                WriteCmdXLCD(cursor);
+                putcXLCD(teclado[camada][tecla]);
+                __delay_ms(512);
+                //if(T1CONbits.TMR1ON == 0){
+                    cursor++;
+                //}
+            }
+        }
+        WriteCmdXLCD(cursor);
+=======
         '"', '(', ')', ',',
         '.', '-', '|', ' '
+>>>>>>> 1d2d16c83aa063357c4dce962842837516fffd10
     }
 };
 
@@ -408,6 +432,7 @@ void init_uart(void) {
 }
 
 void main(void) {
+<<<<<<< HEAD
     if (verificaMemoria()) {
         EEPROM_Guardar(0, 'S');
         for (i = MMRINIT1; i < MMREND1; i++) {
@@ -446,7 +471,32 @@ void main(void) {
     
     i = 0;
 
+=======
+<<<<<<< HEAD
+    if(cont == 4){ // não dá para usar sofmente essa verificacao, pode ser 4321  
+            cont = 0;
+            verifica = 1;
+           
+            if(verificador[0] == 10 && hexa == 192){ // corrigir verificacao de posição
+              if(verificador[1] == 20){
+                  if(verificador[2] == 30){
+                      if(verificador[3] == 40) {
+                          WriteCmdXLCD(0x80);
+                          strcpy(setor, "Tela do ADM    ");
+                          putrsXLCD(setor);
+                          WriteCmdXLCD(0xC0);
+                          putrsXLCD("[A] [B] [C] [D]");
+                      }
+                  }
+              }                        
+            }
+        }
+    
+    config_interrupcao();
+=======
+>>>>>>> 1f7d4cecaa240b25ddc94bf93abd3ced8cb9b52b
     interrupcao_config();
+>>>>>>> 1d2d16c83aa063357c4dce962842837516fffd10
     //config_interrupcao0();
     //config_interrupcao1();
     //config_interrupcao2();
