@@ -1,6 +1,6 @@
 /*
  * File:   main.c
- * Author: Alvaro Henrique Nunes de Lime R.A 2142520
+ * Author: Alvaro Henrique Nunes de Lima R.A 2142520
  * Author: Gustavo Alexandre Dias R.A 2052229
  * Author: Mario Nakazato Neto R.A 2142643
  *
