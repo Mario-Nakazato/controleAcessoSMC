@@ -95,12 +95,6 @@
 #define SENHA_ADM "0000"
 #define SENHA_TRANCA "1234"
 #define NOME "Fechadura"
-#define MMRINIT1 0x00
-#define MMREND1 0x0F
-#define MMRINIT2 0x10
-#define MMREND2 0x1F
-#define MMRINIT3 0x20
-#define MMREND3 0x2F
 
 int tecla = -1, clique = 0, cursor = 1, camada = NCAMADA - 1, i = 0, comando = 0, op = 1, tela = 1, enter = 0, n, k, j;
 char entrada[CARACTER_MAX] = "", senha_tranca[CARACTER_MAX], senha_adm[CARACTER_MAX], nome[CARACTER_MAX];
