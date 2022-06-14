@@ -272,6 +272,8 @@ void led_piscar() {
 }
 
 void leds_config() {
+    TRISDbits.TRISD3 = 0;
+    PORTDbits.RD3 = 1;
     TRISDbits.TRISD0 = 0;
     PORTDbits.RD0 = 1;
     TRISDbits.TRISD1 = 0;
@@ -467,6 +469,7 @@ void main(void) {
             case 2:
                 lcd_txt(LINHA1, "Acesso permitido");
                 lcd_txt(LINHA2, "Destrancado");
+                PORTDbits.RD3 = 0;
                 WriteCmdXLCD(0x0C);
                 break;
             case 3:
@@ -478,12 +481,18 @@ void main(void) {
                 lcd_txt(LINHA1, "Senha invalida");
                 lcd_txt(LINHA2, "");
                 WriteCmdXLCD(0x0C);
-                __delay_ms(2048);
+                for(int k = 0; k<10;k++){
+                    PORTDbits.RD3 = 0;
+                    __delay_ms(200);
+                    PORTDbits.RD3 = 1;
+                    __delay_ms(200);
+                }
                 break;
             case 5:
                 lcd_txt(LINHA1, "Porta fechada");
                 lcd_txt(LINHA2, "Trancado");
                 WriteCmdXLCD(0x0C);
+                PORTDbits.RD3 = 1;
                 __delay_ms(2048);
                 break;
             case 6:
